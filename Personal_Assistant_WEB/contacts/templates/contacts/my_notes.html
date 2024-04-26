@@ -1,0 +1,27 @@
+{% extends "contacts/base.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="custom-h1">My Notes</h1>
+    <div class="card-body">
+        <p class="ml-auto" style="margin-top: 20px; margin-bottom: 20px;">
+            <a href="{% url 'contacts:add_note' %}" class="btn btn-primary">Add Note</a>
+        </p>
+    </div>
+    {% for note in notes %}
+    <div class="card mb-3">
+        <div class="card-header">
+            {{ forloop.counter }}
+        </div>
+        <div class="card-body">
+            <p class="card-text">Text: {{ note.text }}</p>
+            <p class="card-text">Description: {{ note.description }}</p>
+            <p class="card-text">Tags:
+                {% for tag in note.tags.all %}
+                {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

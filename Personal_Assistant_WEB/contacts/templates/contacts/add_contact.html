@@ -1,0 +1,39 @@
+{% extends "contacts/base.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="custom-h1">Add Contact</h1>
+    {% if form.errors and form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+        {{form.non_field_errors}}
+    </div>
+    {% endif %}
+    <form action="{% url 'contacts:add_contact' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_fullname">Full Name:</label>
+            <input type="text" id="id_fullname" name="fullname" class="form-control" value="{{ contact.fullname }}">
+        </div>
+        <div class="form-group">
+            <label for="id_address">Address:</label>
+            <input type="text" id="id_address" name="address" class="form-control" value="{{ contact.address }}">
+        </div>
+        <div class="form-group">
+            <label for="id_phone">Phone:</label>
+            <input type="text" id="id_phone" name="phone" class="form-control" value="{{ contact.phone }}">
+        </div>
+        <div class="form-group">
+            <label for="id_email">Email:</label>
+            <input type="email" id="id_email" name="email" class="form-control" value="{{ contact.email }}">
+        </div>
+        <div class="form-group">
+            <label for="id_birthday">Birthday:</label>
+            <input type="date" id="id_birthday" name="birthday" class="form-control" value="{{ contact.birthday }}">
+        </div>
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-secondary" style="margin-left: 10px;">Reset</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

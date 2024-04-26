@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "web-project-group-9"
+version = "0.1.0"
+description = ""
+authors = ["AndriKovalchuk <andrii.kovalchuk90@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.0.4"
+sqlalchemy = "^2.0.29"
+psycopg2 = "^2.9.9"
+django-phonenumber-field = {extras = ["phonenumberslite"], version = "^7.3.0"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

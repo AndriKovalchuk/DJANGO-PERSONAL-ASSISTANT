@@ -1,0 +1,37 @@
+{% extends "contacts/base.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="custom-h1">Edit Contact</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_fullname">Full Name:</label>
+            <input type="text" id="id_fullname" name="fullname" class="form-control" value="{{ contact.fullname }}">
+        </div>
+        <div class="form-group">
+            <label for="id_address">Address:</label>
+            <input type="text" id="id_address" name="address" class="form-control" value="{{ contact.address }}">
+        </div>
+        <div class="form-group">
+            <label for="id_phone">Phone:</label>
+            <input type="text" id="id_phone" name="phone" class="form-control" value="{{ contact.phone }}">
+            {% if form.errors.phone %}
+            <p class="text-danger">{{ form.errors.phone }}</p>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_email">Email:</label>
+            <input type="email" id="id_email" name="email" class="form-control" value="{{ contact.email }}">
+        </div>
+        <div class="form-group">
+            <label for="id_birthday">Birthday:</label>
+            <input type="date" id="id_birthday" name="birthday" class="form-control" value="{{ contact.birthday }}">
+        </div>
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

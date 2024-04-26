@@ -1,0 +1,35 @@
+{% extends "contacts/base.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="custom-h1">Add Note</h1>
+    {% if form.errors and form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+        {{form.non_field_errors}}
+    </div>
+    {% endif %}
+    <form action="{% url 'contacts:add_note' %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="textInput" class="form-label">Note</label>
+            {{ form.text }}
+            <div id="textHelp2" class="form-text">Note's text.</div>
+            <span>{{form.errors.text}}</span>
+        </div>
+        <div class="mb-3">
+            <label for="descriptionInput" class="form-label">Description</label>
+            {{ form.description }}
+            <div id="textHelp2" class="form-text">Note's description.</div>
+            <span>{{form.errors.description}}</span>
+        </div>
+        <div class="mb-3">
+            <label for="tagInput" class="form-label">Tags</label>
+            {{ form.tags }}
+            <div id="textHelp2" class="form-text">Note's Tags.</div>
+            <span>{{form.errors.tags}}</span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="reset" class="btn btn-secondary">Reset</button>
+    </form>
+</div>
+{% endblock %}

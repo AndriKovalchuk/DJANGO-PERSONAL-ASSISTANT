@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
@@ -73,6 +74,9 @@ def edit_contact(request, contact_id):
 
 def my_contacts(request):
     contacts = Contact.objects.all()  # noqa
+    fullname = request.GET.get('fullname')
+    if fullname:
+        contacts = contacts.filter(fullname__icontains=fullname)
     return render(request, "contacts/my_contacts.html", context={"contacts": contacts})
 
 
@@ -122,4 +126,8 @@ def add_note(request):
 
 def my_notes(request):
     notes = Note.objects.all()  # noqa
-    return render(request, "contacts/my_notes.html", context={"notes": notes})
+    tag = request.GET.get('tag')
+    if tag:
+        notes = notes.filter(tags__name__icontains=tag)
+    top_tags = Tag.objects.annotate(count=Count('name')).order_by('-count')[:10]
+    return render(request, "contacts/my_notes.html", context={"notes": notes, "top_tags": top_tags})

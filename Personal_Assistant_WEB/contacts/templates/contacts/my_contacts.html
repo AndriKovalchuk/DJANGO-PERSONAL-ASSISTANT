@@ -2,6 +2,12 @@
 
 {% block content %}
 <div class="container mt-3">
+    <div class="mb-3">
+        <form class="d-flex" role="search" method="GET" action="{% url 'contacts:my_contacts' %}">
+            <input class="form-control me-2" type="search" name="fullname" placeholder="Search by name" aria-label="Search">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
+    </div>
     <h1 class="custom-h1">My Contacts</h1>
     <div class="card-body">
         <p class="ml-auto" style="margin-top: 20px; margin-bottom: 20px;">

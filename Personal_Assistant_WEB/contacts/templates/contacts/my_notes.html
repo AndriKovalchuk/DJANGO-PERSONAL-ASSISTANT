@@ -1,27 +1,52 @@
 {% extends "contacts/base.html" %}
 
 {% block content %}
-<div class="container mt-3">
-    <h1 class="custom-h1">My Notes</h1>
-    <div class="card-body">
-        <p class="ml-auto" style="margin-top: 20px; margin-bottom: 20px;">
-            <a href="{% url 'contacts:add_note' %}" class="btn btn-primary">Add Note</a>
-        </p>
+<div class="row">
+     <div class="mb-3">
+        <form class="d-flex" role="search" method="GET" action="{% url 'contacts:my_notes' %}">
+            <input class="form-control me-2" type="search" name="tag" placeholder="Search by tag" aria-label="Search">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
     </div>
-    {% for note in notes %}
-    <div class="card mb-3">
-        <div class="card-header">
-            {{ forloop.counter }}
-        </div>
-        <div class="card-body">
-            <p class="card-text">Text: {{ note.text }}</p>
-            <p class="card-text">Description: {{ note.description }}</p>
-            <p class="card-text">Tags:
-                {% for tag in note.tags.all %}
-                {{ tag.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}</p>
+    <div class="col-md-9">
+        <div class="container mt-3">
+            <h1 class="custom-h1">My Notes</h1>
+            <div class="card-body">
+                <p class="ml-auto" style="margin-top: 20px; margin-bottom: 20px;">
+                    <a href="{% url 'contacts:add_note' %}" class="btn btn-primary">Add Note</a>
+                </p>
+            </div>
+            {% for note in notes %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    {{ forloop.counter }}
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Text: {{ note.text }}</p>
+                    <p class="card-text">Description: {{ note.description }}</p>
+                    <p class="card-text">Tags:
+                        {% for tag in note.tags.all %}
+                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}</p>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
-    {% endfor %}
+    <div class="col-md-3">
+        <!-- Виводимо топ-10 тегів -->
+        <div class="mb-3">
+            <h3 class="mb-3">Top 10 Tags:</h3>
+            <ul class="list-group">
+                {% for tag in top_tags %}
+                    <li class="list-group-item">
+                        <span class="badge rounded-pill text-bg-primary">
+                            <a href="?tag={{ tag.name }}">{{ tag.name }} ({{ tag.count }})</a>
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
 {% endblock %}

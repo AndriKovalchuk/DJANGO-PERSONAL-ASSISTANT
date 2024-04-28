@@ -52,14 +52,7 @@
                     </li>
 
                 </ul>
-                <form class="row g-2 align-items-center search-block" method="GET" action="{% url 'contacts:search_results' %}">
-                    <div class="col-auto">
-                        <input class="form-control" type="search" name="q" placeholder="Search" aria-label="Search">
-                    </div>
-                    <div class="col-auto">
-                        <button class="btn btn-primary" type="submit">Search</button>
-                    </div>
-                </form>
+
             </div>
         </nav>
         {% block content %} {% endblock %}

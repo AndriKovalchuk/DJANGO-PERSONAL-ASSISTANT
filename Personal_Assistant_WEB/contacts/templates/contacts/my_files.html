@@ -16,7 +16,7 @@
 {% if files %}
 <ul>
     {% for file in files %}
-    <li>
+    <li class="file-item item">
         <a href="{{ file.url }}">{{ file.name }}</a>
         <a href="{% url 'contacts:download_file' file.url %}">
             <img src="/static/images/download_icon.png" alt="Download Icon" class="download-icon">

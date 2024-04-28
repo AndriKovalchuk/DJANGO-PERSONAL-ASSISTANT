@@ -20,7 +20,8 @@ urlpatterns = [
     path('delete_note/<int:note_id>/', views.delete_note, name='delete_note'),
 
     # Search
-    path('search_results/', views.search_results, name='search_results'),
+    path('search_results_notes/', views.search_results_notes, name='search_results_notes'),
+    path('search_results_contacts/', views.search_results_contacts, name='search_results_contacts'),
 
     # Files
     path('my_files/', views.my_files, name='my_files'),

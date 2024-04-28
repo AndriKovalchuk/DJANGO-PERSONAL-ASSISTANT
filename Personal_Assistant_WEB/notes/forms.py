@@ -1,10 +1,9 @@
 from django import forms
-
 from .models import Note
 
 
 class NoteForm(forms.ModelForm):
-    tags = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", "id": "exampleInputQuote2"}))
+    tags = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control", "id": "tagsInput"}))
 
     class Meta:
         model = Note
@@ -15,13 +14,9 @@ class NoteForm(forms.ModelForm):
             'tags': forms.TextInput(attrs={"class": "form-control", "id": "tagInput"})
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        def clean_tags(self):
-            tags_input = self.cleaned_data['tags']
-            if tags_input:
-                tags_list = [tag.strip() for tag in tags_input.split(',')]
-                return tags_list
-            else:
-                return []
+    def clean_tags(self):
+        tags_input = self.cleaned_data['tags']
+        if tags_input:
+            return tags_input
+        else:
+            return ""

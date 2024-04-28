@@ -1,3 +1,5 @@
+import os
+
 import cloudinary
 import cloudinary.uploader
 import requests
@@ -15,7 +17,7 @@ from .models import Contact, File
 
 from datetime import date, timedelta
 
-from news.views import news_view # noqa
+from news.views import news_view  # noqa
 
 cloudinary.config(cloud_name='andriikovalchuk', api_key='987726452543244', api_secret='4vmOFEveTcjTYiN_dwnTUBKZVbA')
 
@@ -108,7 +110,7 @@ def my_notes(request):
     tag = request.GET.get('tag')
     if tag:
         notes = notes.filter(tags__name__icontains=tag)
-    top_tags = Tag.objects.annotate(count=Count('name')).order_by('-count')[:10]
+    top_tags = Tag.objects.annotate(count=Count('note')).order_by('-count')[:10]
     return render(request, "contacts/my_notes.html", context={"notes": notes, "top_tags": top_tags})
 
 
@@ -135,28 +137,48 @@ def add_note(request):
 def edit_note(request, note_id):
     note = get_object_or_404(Note, id=note_id)
     if request.method == "POST":
-        note_form = NoteForm(request.POST, instance=note)
-        if note_form.is_valid():
-            note_form.save()
-            return redirect(reverse("contacts:my_notes"))
-        else:
-            # If form is invalid, re-render the edit form with errors
-            return render(request, "contacts/edit_note.html", {"note": note, "note_form": note_form})
+        form = NoteForm(request.POST, instance=note)
+        if form.is_valid():
+            text = form.cleaned_data['text']
+            description = form.cleaned_data['description']
+            tags_input = form.cleaned_data['tags']
+
+            note.text = text
+            note.description = description
+            note.save()
+
+            tags_list = [tag.strip() for tag in tags_input.split(',') if tag.strip()]
+            existing_tags = note.tags.all()
+
+            for tag in existing_tags:
+                if tag.name not in tags_list:
+                    note.tags.remove(tag)
+
+            for tag_name in tags_list:
+                tag, _ = Tag.objects.get_or_create(name=tag_name)
+                note.tags.add(tag)
+
+            Tag.objects.filter(note=None).delete()
+
+            return redirect("contacts:my_notes")
     else:
-        # If not a POST request, render the edit form with the existing note
-        note_form = NoteForm(instance=note)
-        return render(request, "contacts/edit_note.html", {"note": note, "note_form": note_form})
+        form = NoteForm(instance=note)
+    return render(request, "contacts/edit_note.html", {"form": form, "note": note})
 
 
 def delete_note(request, note_id):
     note = get_object_or_404(Note, id=note_id)
     if request.method == "POST":
+        tags_to_delete = list(note.tags.all())
         note.delete()
+        for tag in tags_to_delete:
+            if tag.note_set.count() == 0:
+                tag.delete()
         return redirect(reverse("contacts:my_notes"))
     return render(request, "contacts/delete_note.html", context={"note": note})
 
 
-def search_results(request):
+def search_results_notes(request):
     query = request.GET.get('q')
     tag = request.GET.get('tag')
 
@@ -166,9 +188,24 @@ def search_results(request):
         if tag:
             matching_notes = matching_notes.filter(tags__name__iexact=tag.lower())
 
-        return render(request, 'contacts/search_results.html', {'results': matching_notes, 'query': query})
+        return render(request, 'contacts/search_results_notes.html', {'results': matching_notes, 'query': query})
     else:
-        return render(request, 'contacts/search_results.html', {'results': [], 'query': query})
+        return render(request, 'contacts/search_results_notes.html', {'results': [], 'query': query})
+
+
+def search_results_contacts(request):
+    query = request.GET.get('q')
+    tag = request.GET.get('tag')
+
+    if query:
+        matching_tags = Tag.objects.filter(name__icontains=query)
+        matching_notes = Note.objects.filter(tags__in=matching_tags).distinct()
+        if tag:
+            matching_notes = matching_notes.filter(tags__name__iexact=tag.lower())
+
+        return render(request, 'contacts/search_results_notes.html', {'results': matching_notes, 'query': query})
+    else:
+        return render(request, 'contacts/search_results_notes.html', {'results': [], 'query': query})
 
 
 """
@@ -186,13 +223,63 @@ def upload_file(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             file_to_upload = request.FILES['file']
-            uploaded_file = cloudinary.uploader.upload(file_to_upload, folder="uploads/")
-            file_url = uploaded_file['secure_url']
-            file_object = File.objects.create(  # noqa
-                url=file_url,
-                name=file_to_upload.name)
+            file_extension = os.path.splitext(file_to_upload.name)[1].lower()
+            # video upload
+            if file_extension in ['.mov', '.mp4', '.avi', '.mkv', '.wmv']:
+                uploaded_file = cloudinary.uploader.upload(
+                    file_to_upload,
+                    resource_type="video",
+                    folder="uploads/videos/"
+                )
+                file_url = uploaded_file['secure_url']
+                file_object = File.objects.create(
+                    url=file_url,
+                    name=file_to_upload.name
+                )
+                return redirect(reverse("contacts:my_files"))
+            # image upload
+            elif file_extension in ['.jpeg', '.jpg', '.png']:
+                uploaded_file = cloudinary.uploader.upload(
+                    file_to_upload,
+                    resource_type="image",
+                    folder="uploads/images/"
+                )
+                file_url = uploaded_file['secure_url']
+                file_object = File.objects.create(
+                    url=file_url,
+                    name=file_to_upload.name
+                )
+                return redirect(reverse("contacts:my_files"))
+            # document upload
+            elif file_extension in ['.pdf', '.docx', '.xlsx']:
+                uploaded_file = cloudinary.uploader.upload(
+                    file_to_upload,
+                    resource_type="auto",
+                    folder="uploads/documents/"
+                )
+                file_url = uploaded_file['secure_url']
+                file_object = File.objects.create(
+                    url=file_url,
+                    name=file_to_upload.name
+                )
+                return redirect(reverse("contacts:my_files"))
 
-            return redirect(reverse("contacts:my_files"))
+            # audio upload
+            elif file_extension in ['.mp3', '.wav']:
+                uploaded_file = cloudinary.uploader.upload(
+                    file_to_upload,
+                    resource_type="auto",
+                    folder="uploads/audio/"
+                )
+                file_url = uploaded_file['secure_url']
+                file_object = File.objects.create(
+                    url=file_url,
+                    name=file_to_upload.name
+                )
+                return redirect(reverse("contacts:my_files"))
+            else:
+                error_message = "Invalid file format. Please upload a video file (MOV, MP4, AVI, MKV, WMV), image file (JPEG, JPG, PNG), document (PDF, DOCX, XLSX) or audio file (MP3, WAV)."
+                return render(request, 'contacts/upload_file.html', {'form': form, 'error_message': error_message})
     else:
         form = UploadFileForm()
 

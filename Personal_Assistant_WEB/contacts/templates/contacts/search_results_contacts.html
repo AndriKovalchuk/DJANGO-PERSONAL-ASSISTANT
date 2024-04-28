@@ -1,0 +1,20 @@
+{% extends 'contacts/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<h2>Search Results Contacts</h2>
+{% if query %}
+<p>Showing results for: "{{ query }}"</p>
+{% endif %}
+<div class="notes_list">
+    {% for note in results %}
+    <div class="note-text" itemscope="" itemtype="http://schema.org/CreativeWork">
+        <span class="text" itemprop="text">
+            {{ forloop.counter }}. {{ note.text }}
+        </span>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

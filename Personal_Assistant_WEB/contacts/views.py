@@ -19,15 +19,18 @@ from datetime import date, timedelta
 
 from news.views import news_view  # noqa
 
+from django.views.decorators.cache import cache_page
+
 cloudinary.config(cloud_name='andriikovalchuk', api_key='987726452543244', api_secret='4vmOFEveTcjTYiN_dwnTUBKZVbA')
 
 
 # Create your views here.
+@cache_page(60 * 15)
 def main(request):
     return news_view(request)
 
 
-"""
+"""  
 Contacts
 """
 

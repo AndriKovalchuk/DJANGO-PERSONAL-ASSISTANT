@@ -1,27 +1,47 @@
 {% extends "contacts/base.html" %}
 
 {% block content %}
-<div class="container mt-3">
-    <h1 class="custom-h1">My Notes</h1>
-    <div class="card-body">
-        <p class="ml-auto" style="margin-top: 20px; margin-bottom: 20px;">
-            <a href="{% url 'contacts:add_note' %}" class="btn btn-primary">Add Note</a>
-        </p>
-    </div>
-    {% for note in notes %}
-    <div class="card mb-3">
-        <div class="card-header">
-            {{ forloop.counter }}
+<div class="row">
+
+    <div class="col-md-9">
+        <div class="container mt-3">
+            <h1 class="custom-h1">My Notes</h1>
+            <div class="card-body">
+                <p class="ml-auto" style="margin-top: 20px; margin-bottom: 20px;">
+                    <a href="{% url 'contacts:add_note' %}" class="btn btn-primary">Add Note</a>
+                </p>
+            </div>
+            {% for note in notes %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    {{ forloop.counter }}
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Text: {{ note.text }}</p>
+                    <p class="card-text">Description: {{ note.description }}</p>
+                    <p class="card-text">Tags:
+                        {% for tag in note.tags.all %}
+                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}</p>
+                </div>
+            </div>
+            {% endfor %}
         </div>
-        <div class="card-body">
-            <p class="card-text">Text: {{ note.text }}</p>
-            <p class="card-text">Description: {{ note.description }}</p>
-            <p class="card-text">Tags:
-                {% for tag in note.tags.all %}
-                {{ tag.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}</p>
+    </div>
+    <div class="col-md-3" >
+        <!-- Виводимо топ-10 тегів -->
+        <div class="mb-3">
+            <h3 class="mb-3">Top 10 Tags:</h3>
+            <ul class="list-group">
+                {% for tag in top_tags %}
+                    <li class="list-group-item">
+                        <span class="badge rounded-pill text-bg-primary">
+                            <a href="?tag={{ tag.name }}"># {{ tag.name }} ({{ tag.note_set.count }})</a>
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
-    {% endfor %}
 </div>
 {% endblock %}

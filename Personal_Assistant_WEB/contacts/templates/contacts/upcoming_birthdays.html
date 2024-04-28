@@ -1,0 +1,27 @@
+{% extends 'contacts/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Upcoming birthdays in the following 7 days</h2>
+    <div class="row mt-3">
+        {% if upcoming %}
+            {% for contact, turning_age, days_left_till_birthday in upcoming %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ contact.fullname }}</h5>
+                            <p class="card-text">Birthday: {{ contact.birthday|date:"F j" }}</p>
+                            <p class="card-text">Days left: {{ days_left_till_birthday }} day(s)</p>
+                            <p class="card-text">Turning: {{ turning_age }} year(s) old</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col">
+                <p>No upcoming birthdays.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

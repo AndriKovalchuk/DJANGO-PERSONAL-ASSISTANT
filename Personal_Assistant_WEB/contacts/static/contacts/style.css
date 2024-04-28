@@ -10,3 +10,73 @@
 .navbar-nav .dropdown-menu .dropdown-item {
     font-size: 20px;
 }
+
+
+body {
+    background-image: url('{% static 'images/background_2.jpg' %}');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: scroll;
+
+}
+
+.download-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 30px;
+}
+
+
+.note-text {
+        margin-top: 25px;
+    }
+
+.footer-text {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            padding: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+nav .search-block {
+    margin-top: 10px;
+    margin-right: 25px;
+    font-size: 20px;
+}
+
+
+.main-container {
+    height: 200px;
+}
+
+.tags-box {
+    font-weight: bold;
+}
+
+.tag-item {
+    color: blue;
+    font-weight: bold;
+    font-size: 28px;
+    display: block;
+    margin: 4px;
+}
+
+.list-group-item {
+    background-color: transparent;
+    border: none;
+    padding: 4px;
+}
+
+.list-group-item a {
+    font-size: 18px;
+    color: white;
+    text-decoration: none;
+}
+
+.list-group-item a:hover {
+    cursor: default;
+}
+

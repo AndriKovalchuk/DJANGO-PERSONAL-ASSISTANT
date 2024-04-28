@@ -11,7 +11,7 @@ class Tag(models.Model):
 
 
 class Note(models.Model):
-    text = models.CharField(max_length=250, null=False)
+    text = models.CharField(null=False)
     description = models.CharField(max_length=150, null=False)
     created = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag)

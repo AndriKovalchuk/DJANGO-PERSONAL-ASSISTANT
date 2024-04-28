@@ -39,3 +39,7 @@ class ContactForm(ModelForm):
         if phone:
             self.phone_validator()
         return cleaned_data
+
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()

@@ -11,6 +11,8 @@ django = "^5.0.4"
 sqlalchemy = "^2.0.29"
 psycopg2 = "^2.9.9"
 django-phonenumber-field = {extras = ["phonenumberslite"], version = "^7.3.0"}
+cloudinary = "^1.40.0"
+requests = "^2.31.0"
 
 
 [build-system]

@@ -6,6 +6,7 @@
     <div class="card-body">
         <p class="ml-auto" style="margin-top: 20px; margin-bottom: 20px;">
             <a href="{% url 'contacts:add_contact' %}" class="btn btn-primary">Add Contact</a>
+            <a href="{% url 'contacts:upcoming_birthdays' %}" class="btn btn-primary">Upcoming Birthdays</a>
         </p>
     </div>
     {% for contact in contacts %}

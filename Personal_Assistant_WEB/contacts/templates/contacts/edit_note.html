@@ -1,0 +1,26 @@
+{% extends "contacts/base.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1 class="custom-h1">Edit Note</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_text">Text:</label>
+            <input type="text" id="id_text" name="text" class="form-control" value="{{ note.text }}">
+        </div>
+        <div class="form-group">
+            <label for="id_description">Description:</label>
+            <input type="text" id="id_description" name="description" class="form-control" value="{{ note.description }}">
+        </div>
+        <div class="form-group">
+            <label for="id_tags">Tags:</label>
+            <input type="text" id="id_tags" name="phone" class="form-control" value="{{ note.tags }}">
+        </div>
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

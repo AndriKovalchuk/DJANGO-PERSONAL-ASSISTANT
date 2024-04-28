@@ -1,0 +1,91 @@
+{% extends 'contacts/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col">
+        <h1 class="card-title h3">{{ page_title }}</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2 class="h5 card-title m-0">Exchange Rates:</h2>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">Date: {{ data.Date }}</p>
+                <p>Bank: {{ data.Bank }}</p>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Sale:</th>
+                        <th>Purchase:</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for rate in data.Exchange_rate %}
+                    <tr>
+                        <td>{{ rate.currency }}</td>
+                        <td>{{ rate.sale }}</td>
+                        <td>{{ rate.purchase }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2 class="h5 card-title m-0">War Day: {{ data.War_day }}</h2>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title h6">Occupants Loses:</h3>
+                <ul class="list-group list-group-flush">
+                    {% for key, value in data.Occupants_loses.items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center ps-0 pe-0">
+                        {{ key|title }}:
+                        <span class="text-end" style="flex-shrink:0; min-width:20%;">{{ value }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <h3 class="card-title h6 mt-4">Increase by Day:</h3>
+                <ul class="list-group list-group-flush">
+                    {% for key, value in data.Increase_by_day.items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center ps-0 pe-0">
+                        {{ key|title }}:
+                        <span class="text-end" style="flex-shrink:0; min-width:20%;">{{ value }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        {% for news in data.News %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title h4 mb-0">
+                    <a target="_blank" class="text-dark text-decoration-none" href="{{ news.link_to_source }}">{{ news.title }}</a>
+                </h3>
+            </div>
+            <div class="card-body">
+                <p class="text-secondary d-flex justify-content-between align-items-center">
+                    <span>Source: {{ news.source }}</span>
+                    <span>Author: {{ news.author }}</span>
+                    <span>Published: {{ news.publishedAt }}</span>
+                </p>
+                <p class="mb-0">{{ news.description }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ news.link_to_source }}" class="card-link">Read More</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

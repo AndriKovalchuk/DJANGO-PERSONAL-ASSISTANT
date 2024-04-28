@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path('', include('contacts.urls')),
+    path('admin/', admin.site.urls),
+    path('', include('contacts.urls')),  # Route to contacts app for the root URL
+    path('news/', include('news.urls')),  # Route to news app under the 'news/' path
+    path('users/', include('users.urls')),
 ]

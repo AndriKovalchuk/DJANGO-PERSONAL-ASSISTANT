@@ -134,3 +134,10 @@ CACHES = {
         }
     }
 }
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'django-personal-assistant',
+    'API_KEY': '545846767347887',
+    'API_SECRET': 'zdXrX-tCACEvAZaM4S5YfggEP6E',
+}

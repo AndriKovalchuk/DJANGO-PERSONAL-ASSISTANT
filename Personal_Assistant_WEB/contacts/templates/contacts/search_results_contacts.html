@@ -7,14 +7,30 @@
 {% if query %}
 <p>Showing results for: "{{ query }}"</p>
 {% endif %}
-<div class="notes_list">
-    {% for note in results %}
-    <div class="note-text" itemscope="" itemtype="http://schema.org/CreativeWork">
-        <span class="text" itemprop="text">
-            {{ forloop.counter }}. {{ note.text }}
-        </span>
-    </div>
-    {% endfor %}
+{% if not notes %}
+<div class="alert alert-danger" role="alert">
+    We're sorry, but no results were found matching your search criteria.
+    Please try again with different keywords or refine your search.
 </div>
+{% endif %}
+{% for contact in contacts %}
+<div class="card mb-3">
+    <div class="card-header" style="font-weight: bold;">
+        {{ forloop.counter }}. {{ contact.fullname }}
+    </div>
+    <div class="card-body">
+        <p class="card-text">Address: {{ contact.address }}</p>
+        <p class="card-text">Phone: {{ contact.phone }}</p>
+        <p class="card-text">Email: {{ contact.email }}</p>
+        <p class="card-text">Birthday: {{ contact.birthday }}</p>
+    </div>
+    <div class="card-body">
+        <p class="ml-auto" style="margin-top: -20px; margin-bottom: 0px;">
+            <a href="{% url 'contacts:edit_contact' contact.id %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'contacts:delete_contact' contact.id %}" class="btn btn-danger">Delete</a>
+        </p>
+    </div>
+</div>
+{% endfor %}
 
 {% endblock %}

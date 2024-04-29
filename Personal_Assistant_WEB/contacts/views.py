@@ -3,7 +3,7 @@ import os
 import cloudinary
 import cloudinary.uploader
 import requests
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -100,6 +100,16 @@ def upcoming_birthdays(request):
     return render(request, "contacts/upcoming_birthdays.html", context={"upcoming": upcoming})
 
 
+def search_results_contacts(request):
+    contacts = Contact.objects.all()
+    query = request.GET.get('q')
+    if query:
+        contacts = contacts.filter(Q(fullname__icontains=query) | Q(email__icontains=query) | Q(phone__icontains=query))
+        for el in contacts:
+            print(el.fullname)
+    return render(request, 'contacts/search_results_contacts.html', {"contacts": contacts, "query": query})
+
+
 """
 Notes
 """
@@ -109,7 +119,7 @@ def my_notes(request):
     notes = Note.objects.all()  # noqa
     tag = request.GET.get('tag')
     if tag:
-        notes = notes.filter(tags__name__icontains=tag)
+        notes = notes.filter(tags__name=tag)
     top_tags = Tag.objects.annotate(count=Count('note')).order_by('-count')[:10]
     return render(request, "contacts/my_notes.html", context={"notes": notes, "top_tags": top_tags})
 
@@ -179,33 +189,11 @@ def delete_note(request, note_id):
 
 
 def search_results_notes(request):
+    notes = Note.objects.all()  # noqa
     query = request.GET.get('q')
-    tag = request.GET.get('tag')
-
     if query:
-        matching_tags = Tag.objects.filter(name__icontains=query)
-        matching_notes = Note.objects.filter(tags__in=matching_tags).distinct()
-        if tag:
-            matching_notes = matching_notes.filter(tags__name__iexact=tag.lower())
-
-        return render(request, 'contacts/search_results_notes.html', {'results': matching_notes, 'query': query})
-    else:
-        return render(request, 'contacts/search_results_notes.html', {'results': [], 'query': query})
-
-
-def search_results_contacts(request):
-    query = request.GET.get('q')
-    tag = request.GET.get('tag')
-
-    if query:
-        matching_tags = Tag.objects.filter(name__icontains=query)
-        matching_notes = Note.objects.filter(tags__in=matching_tags).distinct()
-        if tag:
-            matching_notes = matching_notes.filter(tags__name__iexact=tag.lower())
-
-        return render(request, 'contacts/search_results_notes.html', {'results': matching_notes, 'query': query})
-    else:
-        return render(request, 'contacts/search_results_notes.html', {'results': [], 'query': query})
+        notes = notes.filter(Q(text__icontains=query) | Q(tags__name__icontains=query))
+    return render(request, 'contacts/search_results_notes.html', {'notes': notes, 'query': query})
 
 
 """

@@ -10,7 +10,7 @@ from .models import Contact
 class ContactForm(ModelForm):
     phone = forms.CharField(max_length=15,
                             widget=forms.TextInput(attrs={"class": "form-control", "id": "phoneInput"}),
-                            )
+                            required=True)
 
     class Meta:
         model = Contact
@@ -39,6 +39,11 @@ class ContactForm(ModelForm):
         if phone:
             self.phone_validator()
         return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(ContactForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.required = True
 
 
 class UploadFileForm(forms.Form):

@@ -100,3 +100,10 @@ nav .search-block {
     font-family: 'Montserrat', sans-serif;
     font-size: 20px;
     }
+
+.news-page-title {
+    text-align: center;
+    font-size: 36px;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}

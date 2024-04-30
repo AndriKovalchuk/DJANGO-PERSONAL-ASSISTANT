@@ -14,6 +14,8 @@ django-phonenumber-field = {extras = ["phonenumberslite"], version = "^7.3.0"}
 cloudinary = "^1.40.0"
 requests = "^2.31.0"
 django-redis = "^5.4.0"
+pillow = "^10.3.0"
+django-environ = "^0.11.2"
 
 
 [build-system]

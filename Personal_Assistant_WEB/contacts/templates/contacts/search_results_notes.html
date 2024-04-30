@@ -7,14 +7,26 @@
 {% if query %}
 <p>Showing results for: "{{ query }}"</p>
 {% endif %}
-<div class="notes_list">
-    {% for note in results %}
-    <div class="note-text" itemscope="" itemtype="http://schema.org/CreativeWork">
-        <span class="text" itemprop="text">
-            {{ forloop.counter }}. {{ note.text }}
-        </span>
-    </div>
-    {% endfor %}
+{% if not notes %}
+<div class="alert alert-danger" role="alert">
+    We're sorry, but no results were found matching your search criteria.
+    Please try again with different keywords or refine your search.
 </div>
-
+{% endif %}
+{% for note in notes %}
+<div class="card mb-3">
+    <div class="card-header">
+        {{ forloop.counter }}. {{ note.text }}
+    </div>
+    <div class="card-body">
+        <p class="card-text">Description: {{ note.description }}</p>
+        <p class="card-text">Tags:
+            {% for tag in note.tags.all %}
+            #{{ tag.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}</p>
+        <a href="{% url 'contacts:edit_note' note.id %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'contacts:delete_note' note.id %}" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+{% endfor %}
 {% endblock %}

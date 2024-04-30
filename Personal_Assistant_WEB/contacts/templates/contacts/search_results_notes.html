@@ -14,10 +14,19 @@
 </div>
 {% endif %}
 {% for note in notes %}
-<div class="note-text" itemscope="" itemtype="http://schema.org/CreativeWork">
-        <span class="text" itemprop="text">
-            {{ forloop.counter }}. {{ note.text }}
-        </span>
+<div class="card mb-3">
+    <div class="card-header">
+        {{ forloop.counter }}. {{ note.text }}
+    </div>
+    <div class="card-body">
+        <p class="card-text">Description: {{ note.description }}</p>
+        <p class="card-text">Tags:
+            {% for tag in note.tags.all %}
+            #{{ tag.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}</p>
+        <a href="{% url 'contacts:edit_note' note.id %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'contacts:delete_note' note.id %}" class="btn btn-danger">Delete</a>
+    </div>
 </div>
 {% endfor %}
 {% endblock %}

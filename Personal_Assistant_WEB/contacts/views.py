@@ -105,8 +105,6 @@ def search_results_contacts(request):
     query = request.GET.get('q')
     if query:
         contacts = contacts.filter(Q(fullname__icontains=query) | Q(email__icontains=query) | Q(phone__icontains=query))
-        for el in contacts:
-            print(el.fullname)
     return render(request, 'contacts/search_results_contacts.html', {"contacts": contacts, "query": query})
 
 

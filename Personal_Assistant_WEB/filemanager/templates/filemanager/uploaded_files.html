@@ -1,0 +1,115 @@
+{% extends 'contacts/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col">
+        <h1 class="card-title h3">{{ page_title }}</h1>
+    </div>
+    <div class="col text-end">
+        <a href="{% url 'filemanager:add_file' %}" class="btn btn-primary">Add file</a>
+        <a href="{% url 'filemanager:create_category' %}" class="btn btn-outline-secondary">Add Category</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="h4 m-0">Search File</h2>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'filemanager:uploaded_files' %}" method="get">
+                    <div class="d-flex gap-2">
+                        <input type="search" class="form-control" id="search" name="search" placeholder="File name">
+                        <button class="btn btn-sm btn-primary" type="submit">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h4 m-0">Categories</h2>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{% url 'filemanager:uploaded_files' %}"
+                       class="list-group-item list-group-item-action {% if request.resolver_match.url_name != 'files_by_categories' %}active{% endif %}"
+                       aria-current="true">
+                        All files
+                    </a>
+                    {% for category in categories %}
+                    <a href="{% url 'filemanager:files_by_categories' category.id %}"
+                       class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'files_by_categories' and request.resolver_match.kwargs.category_id == category.id %} active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card-footer">
+                <a class="btn btn-link p-0" href="{% url 'filemanager:manage_categories' %}">Manage Categories</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card mb-4">
+            <div class="card-body">
+                {% if files %}
+                <table class="table m-0">
+                    <thead>
+                    <tr>
+                        <th scope="col">File name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for file in files %}
+                    <tr>
+                        <td><a href="{% url 'filemanager:download_file' file.id %}" download="{{file.file.name}}">{{file.file.name}}</a>
+                        </td>
+                        <td>{{file.category}}</td>
+                        <td>
+                            <div class="d-inline-flex gap-2">
+                                <a href="{% url 'filemanager:edit_file' file.id %}"
+                                   class="btn btn-sm btn-primary">Edit</a>
+                                <a href="{% url 'filemanager:delete_file' file.id %}"
+                                   class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="h5 m-0">You don't have files. Upload one.</p>
+                {% endif %}
+            </div>
+            {% if files.paginator.num_pages > 1 %}
+            <div class="card-footer">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination m-0">
+                        {% if files.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ files.previous_page_number }}">Previous</a></li>
+                        {% endif %}
+                        {% for number in page_range %}
+                        {% if number != files.number %}
+                        <li class="page-item"><a class="page-link" href="?page={{ number }}">{{ number }}</a></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link">{{ number }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if files.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ files.next_page_number }}">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

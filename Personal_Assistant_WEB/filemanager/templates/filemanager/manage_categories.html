@@ -1,0 +1,52 @@
+{% extends 'contacts/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col">
+        <h1 class="card-title h3">{{ page_title }}</h1>
+    </div>
+    <div class="col text-end">
+        <a href="{% url 'filemanager:create_category' %}" class="btn btn-primary">Add Category</a>
+        <a href="{% url 'filemanager:uploaded_files' %}" class="btn btn-outline-secondary">View Files</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                {% if categories %}
+                <table class="table m-0">
+                    <thead>
+                    <tr>
+                        <th scope="col">Category</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>
+                            <a class="h6" href="{% url 'filemanager:files_by_categories' category.id %}">{{ category.name }}</a>
+                        </td>
+                        <td>
+                            <div class="d-inline-flex gap-2">
+                                <a href="{% url 'filemanager:edit_category' category.id %}"
+                                   class="btn btn-sm btn-primary">Edit</a>
+                                <a href="{% url 'filemanager:delete_category' category.id %}"
+                                   class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="h5 m-0">You don't have categories. Add one.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

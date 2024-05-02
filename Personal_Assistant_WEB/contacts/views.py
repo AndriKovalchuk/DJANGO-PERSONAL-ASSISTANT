@@ -1,4 +1,3 @@
-import json
 import os
 
 import cloudinary
@@ -9,13 +8,12 @@ from django.db.models import Count, Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponse
-from django.utils.safestring import mark_safe
 
-from .forms import ContactForm, UploadFileForm
+from .forms import ContactForm
 from notes.forms import NoteForm  # noqa
 from notes.models import Tag, Note  # noqa
 
-from .models import Contact, File
+from .models import Contact
 
 from datetime import date, timedelta
 
@@ -40,7 +38,7 @@ Contacts
 
 @login_required
 def my_contacts(request):
-    contacts = Contact.objects.all()  # noqa
+    contacts = Contact.objects.filter(user=request.user).all() if request.user.is_authenticated else []  # noqa
     return render(request, "contacts/my_contacts.html", context={"contacts": contacts})
 
 
@@ -50,19 +48,9 @@ def add_contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            fullname = form.cleaned_data['fullname']
-            address = form.cleaned_data['address']
-            phone = form.cleaned_data['phone']
-            email = form.cleaned_data['email']
-            birthday = form.cleaned_data['birthday']
-
-            contact = Contact.objects.create(  # noqa
-                fullname=fullname,
-                address=address,
-                phone=phone,
-                email=email,
-                birthday=birthday,
-            )
+            contact = form.save(commit=False)
+            contact.user = request.user
+            contact.save()
 
             return redirect(reverse("contacts:my_contacts"))
     return render(request, "contacts/add_contact.html", context={"form": form})
@@ -70,7 +58,7 @@ def add_contact(request):
 
 @login_required
 def edit_contact(request, contact_id):
-    contact = get_object_or_404(Contact, id=contact_id)
+    contact = get_object_or_404(Contact, id=contact_id, user=request.user)
     if request.method == "POST":
         form = ContactForm(request.POST, instance=contact)
         if form.is_valid():
@@ -83,7 +71,7 @@ def edit_contact(request, contact_id):
 
 @login_required
 def delete_contact(request, contact_id):
-    contact = get_object_or_404(Contact, id=contact_id)
+    contact = get_object_or_404(Contact, id=contact_id, user=request.user)
     if request.method == "POST":
         contact.delete()
         return redirect(reverse("contacts:my_contacts"))
@@ -95,7 +83,7 @@ def upcoming_birthdays(request):
     current_date = date.today()
     to_date = current_date + timedelta(days=7)
     upcoming = []
-    contacts = Contact.objects.all()  # noqa
+    contacts = Contact.objects.filter(user=request.user).all()  # noqa
 
     for contact in contacts:
 
@@ -115,7 +103,7 @@ def upcoming_birthdays(request):
 
 @login_required
 def search_results_contacts(request):
-    contacts = Contact.objects.all()
+    contacts = Contact.objects.filter(user=request.user).all()  # noqa
     query = request.GET.get('q')
     if query:
         contacts = contacts.filter(Q(fullname__icontains=query) | Q(email__icontains=query) | Q(phone__icontains=query))
@@ -131,11 +119,11 @@ Notes
 
 @login_required
 def my_notes(request):
-    notes = Note.objects.all()  # noqa
+    notes = Note.objects.filter(user=request.user).all()  # noqa
     tag = request.GET.get('tag')
     if tag:
         notes = notes.filter(tags__name__icontains=tag)
-    top_tags = Tag.objects.annotate(count=Count('note')).order_by('-count')[:10]
+    top_tags = Tag.objects.filter(note__user=request.user).annotate(count=Count('note')).order_by('-count')[:10]
     return render(request, "contacts/my_notes.html", context={"notes": notes, "top_tags": top_tags})
 
 
@@ -148,9 +136,11 @@ def add_note(request):
             text = form.cleaned_data['text']
             description = form.cleaned_data['description']
             tags_input = form.cleaned_data['tags']
+
             new_note = Note.objects.create(
                 text=text,
                 description=description,
+                user=request.user,
             )
             tags_list = [tag.strip() for tag in tags_input.split(',') if tag.strip()]
             for tag_name in tags_list:
@@ -162,7 +152,7 @@ def add_note(request):
 
 @login_required
 def edit_note(request, note_id):
-    note = get_object_or_404(Note, id=note_id)
+    note = get_object_or_404(Note, id=note_id, user=request.user)
     if request.method == "POST":
         form = NoteForm(request.POST, instance=note)
         if form.is_valid():
@@ -195,7 +185,7 @@ def edit_note(request, note_id):
 
 @login_required
 def delete_note(request, note_id):
-    note = get_object_or_404(Note, id=note_id)
+    note = get_object_or_404(Note, id=note_id, user=request.user)
     if request.method == "POST":
         tags_to_delete = list(note.tags.all())
         note.delete()
@@ -208,102 +198,8 @@ def delete_note(request, note_id):
 
 @login_required
 def search_results_notes(request):
-    notes = Note.objects.all()  # noqa
+    notes = Note.objects.filter(user=request.user).all()  # noqa
     query = request.GET.get('q')
     if query:
         notes = notes.filter(Q(text__icontains=query) | Q(tags__name__icontains=query))
     return render(request, 'contacts/search_results_notes.html', {'notes': notes, 'query': query})
-
-
-"""
-Files
-"""
-
-
-@login_required
-def my_files(request):
-    files = File.objects.all()  # noqa
-    return render(request, 'contacts/my_files.html', {'files': files})
-
-
-@login_required
-def upload_file(request):
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            file_to_upload = request.FILES['file']
-            file_extension = os.path.splitext(file_to_upload.name)[1].lower()
-            # video upload
-            if file_extension in ['.mov', '.mp4', '.avi', '.mkv', '.wmv']:
-                uploaded_file = cloudinary.uploader.upload(
-                    file_to_upload,
-                    resource_type="video",
-                    folder="uploads/videos/"
-                )
-                file_url = uploaded_file['secure_url']
-                file_object = File.objects.create(
-                    url=file_url,
-                    name=file_to_upload.name
-                )
-                return redirect(reverse("contacts:my_files"))
-            # image upload
-            elif file_extension in ['.jpeg', '.jpg', '.png']:
-                uploaded_file = cloudinary.uploader.upload(
-                    file_to_upload,
-                    resource_type="image",
-                    folder="uploads/images/"
-                )
-                file_url = uploaded_file['secure_url']
-                file_object = File.objects.create(
-                    url=file_url,
-                    name=file_to_upload.name
-                )
-                return redirect(reverse("contacts:my_files"))
-            # document upload
-            elif file_extension in ['.pdf', '.docx', '.xlsx']:
-                uploaded_file = cloudinary.uploader.upload(
-                    file_to_upload,
-                    resource_type="auto",
-                    folder="uploads/documents/"
-                )
-                file_url = uploaded_file['secure_url']
-                file_object = File.objects.create(
-                    url=file_url,
-                    name=file_to_upload.name
-                )
-                return redirect(reverse("contacts:my_files"))
-
-            # audio upload
-            elif file_extension in ['.mp3', '.wav']:
-                uploaded_file = cloudinary.uploader.upload(
-                    file_to_upload,
-                    resource_type="auto",
-                    folder="uploads/audio/"
-                )
-                file_url = uploaded_file['secure_url']
-                file_object = File.objects.create(
-                    url=file_url,
-                    name=file_to_upload.name
-                )
-                return redirect(reverse("contacts:my_files"))
-            else:
-                error_message = "Invalid file format. Please upload a video file (MOV, MP4, AVI, MKV, WMV), image file (JPEG, JPG, PNG), document (PDF, DOCX, XLSX) or audio file (MP3, WAV)."
-                return render(request, 'contacts/upload_file.html', {'form': form, 'error_message': error_message})
-    else:
-        form = UploadFileForm()
-
-    return render(request, 'contacts/upload_file.html', {'form': form})
-
-
-@login_required
-def download_file(request, file_url):
-    file_name = file_url.split('/')[-1]  # get the filename from the URL
-    response = requests.get(file_url, stream=True)  # get the file content from Cloudinary
-
-    if response.status_code == 200:
-        # Set the Content-Disposition header to force download
-        response = HttpResponse(response.content, content_type='application/octet-stream')
-        response['Content-Disposition'] = f'attachment; filename="{file_name}"'
-        return response
-    else:
-        return HttpResponse("File not found", status=response.status_code)

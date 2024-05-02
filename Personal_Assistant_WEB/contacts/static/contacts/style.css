@@ -107,3 +107,52 @@ nav .search-block {
     margin-top: 20px;
     margin-bottom: 5px;
 }
+
+.custom-title {
+    font-size: 60px;
+
+}
+
+.header-box {
+    padding-left: 300px;
+}
+
+@media only screen and (max-width: 414px) {
+    .custom-title a {
+    font-size: 40px;
+    margin-bottom: 50px;
+    text-align: center;
+    }
+
+    .header-box {
+    padding-left: 15px;
+    padding-right: 15px;
+    }
+
+
+    .navbar-nav .nav-link,
+    .navbar-nav .dropdown-menu .dropdown-item {
+        font-size: 12px;
+    }
+
+    .navbar-nav .dropdown-menu.show .dropdown-item {
+            display: none;
+        }
+
+    .footer-text {
+        font-size: 10px;
+    }
+
+    nav .search-block {
+        font-size: 16px;
+    }
+
+    .main-container {
+        height: auto;
+    }
+
+    .text-center-mobile {
+        margin-top: 10px;
+        text-align: center;
+    }
+}

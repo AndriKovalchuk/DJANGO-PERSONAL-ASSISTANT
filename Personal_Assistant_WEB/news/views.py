@@ -5,7 +5,7 @@ from pathlib import Path
 import requests
 from django.core.cache import cache
 
-from Personal_Assistant_WEB.settings import NEWSAPI_API_KEY  # noqa
+from Personal_Assistant_WEB.settings import NEWSAPI_API_KEY, WEATHER_API_KEY  # noqa
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -19,7 +19,8 @@ WAR_STATISTICS_URL = "https://russianwarship.rip/api/v2/statistics/latest/"
 NEWS_DAYS = 2
 NEWS_DATE = CURRENT_DATE - timedelta(days=NEWS_DAYS)
 CURRENT_DATE_STR_NEWS = NEWS_DATE.strftime("%Y-%m-%d")
-NEWS_TO_SHOW = 7
+
+NEWS_TO_SHOW = 9
 
 NEWSAPI_URL = f"https://newsapi.org/v2/top-headlines?country=ua&apiKey={NEWSAPI_API_KEY}"
 
@@ -28,6 +29,42 @@ EXCHANGE_RATES_CACHE_KEY = 'exchange_rates'
 WAR_STATS_CACHE_KEY = 'war_stats'
 WAR_STATS_INCREASE_CACHE_KEY = 'war_stats_increase'
 NEWS_ARTICLES_CACHE_KEY = 'news_articles'
+WEATHER_CACHE_KEY = 'weather'
+WEATHER_FORECAST_CACHE_KEY = 'weather_forecast'
+
+# WEATHER
+CITY_NAME = "Kyiv"
+
+WEATHER_URL = f"http://api.weatherapi.com/v1/current.json?key={WEATHER_API_KEY}&q={CITY_NAME}"
+
+WEATHER_URL_FORECAST = f"http://api.weatherapi.com/v1/forecast.json?key={WEATHER_API_KEY}&q={CITY_NAME}&days=3"
+
+
+def get_weather(api_key, city_name):
+    WEATHER_URL = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city_name}"
+
+    response = requests.get(WEATHER_URL)
+    if response.status_code == 200:
+        weather_data = response.json()
+        return weather_data
+    else:
+        return None
+
+
+def get_weather_forecast(api_key, city_name, days):
+    WEATHER_URL = f"http://api.weatherapi.com/v1/forecast.json?key={api_key}&q={city_name}&days={days}"
+
+    response = requests.get(WEATHER_URL)
+    if response.status_code == 200:
+        weather_data = response.json()
+        return weather_data
+    else:
+        return None
+
+
+def get_day_of_week(date_string):
+    date_obj = datetime.strptime(date_string, '%Y-%m-%d')
+    return date_obj.strftime('%A')
 
 
 def fetch_data(url):
@@ -46,9 +83,12 @@ def news_view(request):
     war_stats_cache = cache.get(WAR_STATS_CACHE_KEY)
     war_stats_increase_cache = cache.get(WAR_STATS_INCREASE_CACHE_KEY)
     news_articles_cache = cache.get(NEWS_ARTICLES_CACHE_KEY)
+    weather_cache = cache.get(WEATHER_CACHE_KEY)
+    weather_forecast_cache = cache.get(WEATHER_FORECAST_CACHE_KEY)
 
     if not (
-            exchange_rates_cache and war_stats_cache and war_stats_increase_cache and news_articles_cache):
+            exchange_rates_cache and war_stats_cache and war_stats_increase_cache and news_articles_cache and
+            weather_cache and weather_forecast_cache):
 
         urls = [PRIVAT_URL, WAR_STATISTICS_URL, NEWSAPI_URL]
         raw_data = get_data_from_apis(urls)
@@ -61,11 +101,18 @@ def news_view(request):
 
         news_articles = raw_data[2]["articles"][::-1]
 
+        weather_data = get_weather(WEATHER_API_KEY, CITY_NAME)
+        weather_forecast_data = get_weather_forecast(WEATHER_API_KEY, CITY_NAME, 4)
+        forecast_days = weather_forecast_data.get("forecast", {}).get("forecastday", [])
+
         # Cache data for next request (15 minutes (900 seconds))
         cache.set(EXCHANGE_RATES_CACHE_KEY, exchange_rates, timeout=900)
         cache.set(WAR_STATS_CACHE_KEY, war_stats, timeout=900)
         cache.set(WAR_STATS_INCREASE_CACHE_KEY, war_stats_increase, timeout=900)
         cache.set(NEWS_ARTICLES_CACHE_KEY, news_articles, timeout=900)
+        cache.set(WEATHER_CACHE_KEY, weather_data, timeout=900)
+        cache.set(WEATHER_FORECAST_CACHE_KEY, weather_forecast_data, timeout=900)
+
 
         # IN CASE EXCHANGE RATES ARE NOT UPDATED
         for currency in ['USD', 'EUR', 'PLN']:
@@ -121,7 +168,26 @@ def news_view(request):
                 "description": news_articles[i]["description"],
                 "link_to_source": news_articles[i]["url"],
                 "publishedAt": news_articles[i]["publishedAt"]
-            } for i in range(NEWS_TO_SHOW)]
+            } for i in range(NEWS_TO_SHOW)],
+            'Weather': [{
+                "Country": weather_data['location']["country"],
+                "City": weather_data['location']["name"],
+                "Temperature": weather_data['current']['temp_c'],
+                "Condition_icon": weather_data['current']['condition']['icon'],
+                "Condition_text": weather_data['current']['condition']['text'],
+                "Wind_speed": weather_data['current']['wind_kph'],
+                "Humidity": weather_data['current']['humidity'],
+                "Pressure": weather_data['current']['pressure_mb'],
+                "UV": weather_data['current']['uv']
+            }],
+            'Weather_Forecast': [{
+                "Forecast_Date": forecast_day["date"],
+                "Day_of_Week": get_day_of_week(forecast_day["date"]),
+                "Max_Temperature": forecast_day["day"]["maxtemp_c"],
+                "Min_Temperature": forecast_day["day"]["mintemp_c"],
+                "Condition_icon": forecast_day["day"]["condition"]["icon"],
+                "Condition_text": forecast_day["day"]["condition"]["text"],
+            } for forecast_day in forecast_days[1:]]
         }
 
     else:
@@ -135,6 +201,11 @@ def news_view(request):
         current_day = datetime.now()
         war_start_day = datetime(2022, 2, 23)
         war_days = (current_day - war_start_day).days
+
+        weather_data = get_weather(WEATHER_API_KEY, CITY_NAME)
+
+        weather_forecast_data = get_weather_forecast(WEATHER_API_KEY, CITY_NAME, 4)
+        forecast_days = weather_forecast_data.get("forecast", {}).get("forecastday", [])
 
         # IN CASE EXCHANGE RATES ARE NOT UPDATED
         for currency in ['USD', 'EUR', 'PLN']:
@@ -192,7 +263,27 @@ def news_view(request):
                 "description": news_articles[i]["description"],
                 "link_to_source": news_articles[i]["url"],
                 "publishedAt": news_articles[i]["publishedAt"]
-            } for i in range(NEWS_TO_SHOW)]
+            } for i in range(NEWS_TO_SHOW)],
+            'Weather': [{
+                "Country": weather_data['location']["country"],
+                "City": weather_data['location']["name"],
+                "Temperature": weather_data['current']['temp_c'],
+                "Condition_icon": weather_data['current']['condition']['icon'],
+                "Condition_text": weather_data['current']['condition']['text'],
+                "Wind_speed": weather_data['current']['wind_kph'],
+                "Humidity": weather_data['current']['humidity'],
+                "Pressure": weather_data['current']['pressure_mb'],
+                "UV": weather_data['current']['uv']
+            }],
+            'Weather_Forecast': [{
+                "Forecast_Date": forecast_day["date"],
+                "Day_of_Week": get_day_of_week(forecast_day["date"]),
+                "Max_Temperature": forecast_day["day"]["maxtemp_c"],
+                "Min_Temperature": forecast_day["day"]["mintemp_c"],
+                "Condition_icon": forecast_day["day"]["condition"]["icon"],
+                "Condition_text": forecast_day["day"]["condition"]["text"],
+            } for forecast_day in forecast_days[1:]]
+
         }
 
     return render(request, 'news/index.html', context={'page_title': 'News and Statistics', 'data': view_data})

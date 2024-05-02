@@ -1,8 +1,9 @@
 {% extends 'contacts/base.html' %}
+{% load i18n %}
 
 {% block content %}
 <div class="container mt-3">
-    <h2>Login User</h2>
+    <h2>{% trans 'Login User' %}</h2>
 
     {% if messages %}
     <div class="messages">
@@ -20,24 +21,24 @@
     <form method="post">
         {% csrf_token %}
         <div class="mb-3">
-            <label class="form-label">Username
+            <label class="form-label">{% trans 'Username' %}
                 {{ form.username }}
             </label>
             <span>{{form.errors.username}}</span>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Password
+            <label class="form-label">{% trans 'Password' %}
                 {{ form.password }}
             </label>
             <span>{{form.errors.password}}</span>
         </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <button type="reset" class="btn btn-secondary">Reset</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+        <button type="reset" class="btn btn-secondary">{% trans 'Reset' %}</button>
 
         <div class="container mt-3">
-            <a href="{% url 'users:password_reset' %}" class="text-center" style="margin-left: -10px;"><i>Forgot Password?</i></a>
+            <a href="{% url 'users:password_reset' %}" class="text-center" style="margin-left: -10px;"><i>{% trans 'Forgot Password?' %}</i></a>
         </div>
     </form>
 </div>

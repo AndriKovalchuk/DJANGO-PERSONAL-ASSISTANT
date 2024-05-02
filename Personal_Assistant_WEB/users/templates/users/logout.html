@@ -1,10 +1,11 @@
 {% extends "contacts/base.html" %}
+{% load i18n %}
 
 {% block content %}
 
     <div class="container mt-3">
-        <h1>Logged out?</h1>
-        <h2>We'll miss your presence on our website. Feel free to return whenever you're ready to dive back in. Until then, may your adventures online be as fulfilling as ever!</h2>
+        <h1>{% trans 'Logged out?' %}</h1>
+        <h2>{% trans 'Your absence from our website will be felt, but know that you are always welcome to come back whenever you are ready. In the meantime, may your online adventures continue to bring you fulfillment and joy!' %}</h2>
     </div>
 
 {% endblock %}

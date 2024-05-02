@@ -44,7 +44,3 @@ class ContactForm(ModelForm):
         super(ContactForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.required = True
-
-
-class UploadFileForm(forms.Form):
-    file = forms.FileField()

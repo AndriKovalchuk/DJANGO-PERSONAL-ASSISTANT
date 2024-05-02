@@ -1,16 +1,15 @@
 {% extends 'contacts/base.html' %}
 {% load static %}
-
+{% load i18n %}
 
 {% block content %}
-<h2>Search Results Contacts</h2>
+<h2>{% trans 'Search Results Contacts' %}</h2>
 {% if query %}
-<p>Showing results for: "{{ query }}"</p>
+<p>{% trans 'Showing results for' %}: "{{ query }}"</p>
 {% endif %}
 {% if not contacts %}
 <div class="alert alert-danger" role="alert">
-    We're sorry, but no results were found matching your search criteria.
-    Please try again with different keywords or refine your search.
+    {% trans "We're sorry, but no results were found matching your search criteria. Please try again with different keywords or refine your search." %}
 </div>
 {% endif %}
 {% for contact in contacts %}
@@ -19,18 +18,17 @@
         {{ forloop.counter }}. {{ contact.fullname }}
     </div>
     <div class="card-body">
-        <p class="card-text">Address: {{ contact.address }}</p>
-        <p class="card-text">Phone: {{ contact.phone }}</p>
-        <p class="card-text">Email: {{ contact.email }}</p>
-        <p class="card-text">Birthday: {{ contact.birthday }}</p>
+        <p class="card-text">{% trans 'Address' %}: {{ contact.address }}</p>
+        <p class="card-text">{% trans 'Phone' %}: {{ contact.phone }}</p>
+        <p class="card-text">{% trans 'Email' %}: {{ contact.email }}</p>
+        <p class="card-text">{% trans 'Birthday' %}: {{ contact.birthday }}</p>
     </div>
     <div class="card-body">
         <p class="ml-auto" style="margin-top: -20px; margin-bottom: 0px;">
-            <a href="{% url 'contacts:edit_contact' contact.id %}" class="btn btn-primary">Edit</a>
-            <a href="{% url 'contacts:delete_contact' contact.id %}" class="btn btn-danger">Delete</a>
+            <a href="{% url 'contacts:edit_contact' contact.id %}" class="btn btn-primary">{% trans 'Edit' %}</a>
+            <a href="{% url 'contacts:delete_contact' contact.id %}" class="btn btn-danger">{% trans 'Delete' %}</a>
         </p>
     </div>
 </div>
 {% endfor %}
-
 {% endblock %}

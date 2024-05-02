@@ -23,9 +23,5 @@ urlpatterns = [
     path('search_results_contacts/', views.search_results_contacts, name='search_results_contacts'),
     path('search_results_notes/', views.search_results_notes, name='search_results_notes'),
 
-    # Files
-    path('my_files/', views.my_files, name='my_files'),
-    path('download_file/<path:file_url>/', views.download_file, name='download_file'),
-    path('upload_file/', views.upload_file, name='upload_file'),
 
 ]

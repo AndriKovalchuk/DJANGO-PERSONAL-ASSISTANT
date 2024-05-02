@@ -1,8 +1,9 @@
 {% extends 'contacts/base.html' %}
+{% load i18n %}
 
 {% block content %}
 <div class="container mt-3">
-    <h2>Register User</h2>
+    <h2>{% trans 'Register User' %}</h2>
     {% if form.errors and form.non_field_errors %}
     <div class="alert alert-danger" role="alert">
         {{form.non_field_errors}}
@@ -11,31 +12,31 @@
     <form method="post">
         {% csrf_token %}
         <div class="mb-3">
-            <label class="form-label">Username
+            <label class="form-label">{% trans 'Username' %}
                 {{ form.username }}
             </label>
             <span>{{form.errors.username}}</span>
         </div>
         <div class="mb-3">
-            <label class="form-label">Email
+            <label class="form-label">{% trans 'Email' %}
                 {{ form.email }}
             </label>
             <span>{{form.errors.email}}</span>
         </div>
         <div class="mb-3">
-            <label class="form-label">Password
+            <label class="form-label">{% trans 'Password' %}
                 {{ form.password1 }}
             </label>
             <span>{{form.errors.password1}}</span>
         </div>
         <div class="mb-3">
-            <label class="form-label">Repeat Password
+            <label class="form-label">{% trans 'Repeat Password' %}
                 {{ form.password2 }}
             </label>
             <span>{{form.errors.password2}}</span>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <button type="reset" class="btn btn-secondary">Reset</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+        <button type="reset" class="btn btn-secondary">{% trans 'Reset' %}</button>
     </form>
 </div>
 

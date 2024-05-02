@@ -1,27 +1,28 @@
 {% extends "contacts/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="container mt-3">
-    <h1 class="custom-h1">Edit Note</h1>
+    <h1 class="custom-h1">{% trans "Edit Note" %}</h1>
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label for="id_text">Text:</label>
+            <label for="id_text">{% trans "Text:" %}</label>
             <input type="text" id="id_text" name="text" class="form-control" value="{{ note.text }}">
         </div>
         <div class="form-group">
-            <label for="id_description">Description:</label>
+            <label for="id_description">{% trans "Description:" %}</label>
             <input type="text" id="id_description" name="description" class="form-control" value="{{ note.description }}">
         </div>
         <div class="form-group">
-            <label for="id_tags">Tags:</label>
+            <label for="id_tags">{% trans "Tags:" %}</label>
             {% for tag in note.tags.all %}
             <input type="text" id="id_tags" name="tags" class="form-control" value="{{ tag.name }}">
             {% endfor %}
         </div>
         <div style="margin-top: 20px;">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <a href="{% url 'contacts:my_notes' %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
+            <a href="{% url 'contacts:my_notes' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
         </div>
     </form>
 </div>

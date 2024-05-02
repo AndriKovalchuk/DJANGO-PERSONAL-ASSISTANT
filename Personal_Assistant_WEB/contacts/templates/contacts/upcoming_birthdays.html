@@ -1,8 +1,9 @@
 {% extends 'contacts/base.html' %}
+{% load i18n %}
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Upcoming birthdays in the following 7 days</h2>
+    <h2>{% trans "Upcoming birthdays in the following 7 days" %}</h2>
     <div class="row mt-3">
         {% if upcoming %}
             {% for contact, turning_age, days_left_till_birthday in upcoming %}
@@ -19,7 +20,7 @@
             {% endfor %}
         {% else %}
             <div class="col">
-                <p>No upcoming birthdays.</p>
+                <p>{% trans "No upcoming birthdays." %}</p>
             </div>
         {% endif %}
     </div>

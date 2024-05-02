@@ -1,0 +1,102 @@
+{% extends 'contacts/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans 'Chat Interface' %}</title>
+    <style>
+        .container .chat-container {
+            background-color: white;
+            margin-top: 50px;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container chat-container">
+        <h1>{% trans 'Live Chat' %}</h1>
+        <div id="chat-display" style="margin-bottom: 20px;">
+            <!-- Chat messages -->
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" id="message-input" class="form-control" placeholder="{% trans 'Type your message...' %}">
+            <button id="send-button" class="btn btn-primary">{% trans 'Send' %}</button>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket connection
+        const socket = new WebSocket('ws://192.168.50.177:4000'); // Update with your WebSocket server address
+
+        // Function to append a message to the chat display
+        function appendMessage(sender, message) {
+            const chatDisplay = document.getElementById('chat-display');
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message');
+
+            const senderElement = document.createElement('strong');
+            senderElement.textContent = sender + ': ';
+            messageContainer.appendChild(senderElement);
+
+            const messageElement = document.createElement('span');
+            messageElement.textContent = message;
+            messageContainer.appendChild(messageElement);
+
+            chatDisplay.appendChild(messageContainer);
+        }
+
+        // Event listener for WebSocket open
+        socket.addEventListener('open', function (event) {
+            console.log('WebSocket connected');
+        });
+
+        // Event listener for WebSocket messages
+        socket.addEventListener('message', function (event) {
+            console.log('Message received:', event.data);
+            const data = JSON.parse(event.data);
+            const sender = data.sender; // Assuming the sender's name is included in the message
+            const message = data.message; // Assuming the message content is included in the message
+            appendMessage(sender, message); // Append received message to chat display with sender's name
+        });
+
+        // Function to fetch the currently logged-in user's name
+        function getLoggedInUserName() {
+            // Retrieve the logged-in user's name from the template context
+            return "{{ request.user.username }}"; // Assuming you're using Django's built-in authentication system
+        }
+
+        // Event listener for send button click
+        document.getElementById('send-button').addEventListener('click', function () {
+            sendMessage();
+        });
+
+        // Event listener for Enter key press in the message input field
+        document.getElementById('message-input').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Function to send a message
+        function sendMessage() {
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value;
+            const sender = getLoggedInUserName(); // Get the logged-in user's name
+            const data = JSON.stringify({ sender: sender, message: message });
+            socket.send(data); // Send message to WebSocket server
+            messageInput.value = ''; // Clear message input field
+        }
+    </script>
+</body>
+{% endblock %}

@@ -48,4 +48,4 @@ This project aims to develop a comprehensive personal assistant application usin
 
 #### License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](https://github.com/AndriKovalchuk/DJANGO-PERSONAL-ASSISTANT/blob/license/LICENSE.txt).

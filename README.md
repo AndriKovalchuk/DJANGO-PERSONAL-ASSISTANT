@@ -35,6 +35,8 @@ This project aims to develop a comprehensive personal assistant application usin
 #### Additional Tasks Completed
 
 - **HTML/CSS Improvement**: Enhanced the visualization of HTML and CSS components for better user experience.
+- **Multilingual Interface**: The project's interface is implemented in both Ukrainian and English languages.
+- **Live Chat Bot**: Implemented a live chatbot feature for user interaction.
 
 #### Contributors
 
@@ -46,4 +48,4 @@ This project aims to develop a comprehensive personal assistant application usin
 
 #### License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](https://github.com/AndriKovalchuk/DJANGO-PERSONAL-ASSISTANT/blob/license/LICENSE.txt).

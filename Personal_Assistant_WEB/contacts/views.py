@@ -3,30 +3,29 @@ import os
 import cloudinary
 import cloudinary.uploader
 import requests
-from django.db.models import Count, Q
+from django.db.models import Count
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
-from .forms import ContactForm
+from .forms import ContactForm, UploadFileForm
 from notes.forms import NoteForm  # noqa
 from notes.models import Tag, Note  # noqa
 
-from .models import Contact
+from .models import Contact, File
 
 from datetime import date, timedelta
 
 from news.views import news_view  # noqa
 
-from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_page
 
-from Personal_Assistant_WEB.settings import env  # noqa
-
-cloudinary.config(cloud_name=env('CLOUD_NAME'), api_key=env('CLOUD_API_KEY'), api_secret=env('CLOUD_API_SECRET'))
+cloudinary.config(cloud_name='andriikovalchuk', api_key='987726452543244', api_secret='4vmOFEveTcjTYiN_dwnTUBKZVbA')
 
 
 # Create your views here.
+@cache_page(60 * 15)
 def main(request):
     return news_view(request)
 
@@ -36,54 +35,57 @@ Contacts
 """
 
 
-@login_required
 def my_contacts(request):
-    contacts = Contact.objects.filter(user=request.user).all() if request.user.is_authenticated else []  # noqa
+    contacts = Contact.objects.all()  # noqa
     return render(request, "contacts/my_contacts.html", context={"contacts": contacts})
 
 
-@login_required
 def add_contact(request):
     form = ContactForm()
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            contact = form.save(commit=False)
-            contact.user = request.user
-            contact.save()
+            fullname = form.cleaned_data['fullname']
+            address = form.cleaned_data['address']
+            phone = form.cleaned_data['phone']
+            email = form.cleaned_data['email']
+            birthday = form.cleaned_data['birthday']
+
+            contact = Contact.objects.create(  # noqa
+                fullname=fullname,
+                address=address,
+                phone=phone,
+                email=email,
+                birthday=birthday,
+            )
 
             return redirect(reverse("contacts:my_contacts"))
     return render(request, "contacts/add_contact.html", context={"form": form})
 
 
-@login_required
 def edit_contact(request, contact_id):
-    contact = get_object_or_404(Contact, id=contact_id, user=request.user)
+    contact = get_object_or_404(Contact, id=contact_id)
     if request.method == "POST":
-        form = ContactForm(request.POST, instance=contact)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse("contacts:my_contacts"))
-    else:
-        form = ContactForm(instance=contact)
-    return render(request, "contacts/edit_contact.html", context={"contact": contact, "form": form})
+        contact_form = ContactForm(request.POST, instance=contact)
+        if contact_form.is_valid():
+            contact_form.save()
+        return redirect(reverse("contacts:my_contacts"))
+    return render(request, "contacts/edit_contact.html", context={"contact": contact})
 
 
-@login_required
 def delete_contact(request, contact_id):
-    contact = get_object_or_404(Contact, id=contact_id, user=request.user)
+    contact = get_object_or_404(Contact, id=contact_id)
     if request.method == "POST":
         contact.delete()
         return redirect(reverse("contacts:my_contacts"))
     return render(request, "contacts/delete_contact.html", context={"contact": contact})
 
 
-@login_required
 def upcoming_birthdays(request):
     current_date = date.today()
     to_date = current_date + timedelta(days=7)
     upcoming = []
-    contacts = Contact.objects.filter(user=request.user).all()  # noqa
+    contacts = Contact.objects.all()  # noqa
 
     for contact in contacts:
 
@@ -101,33 +103,20 @@ def upcoming_birthdays(request):
     return render(request, "contacts/upcoming_birthdays.html", context={"upcoming": upcoming})
 
 
-@login_required
-def search_results_contacts(request):
-    contacts = Contact.objects.filter(user=request.user).all()  # noqa
-    query = request.GET.get('q')
-    if query:
-        contacts = contacts.filter(Q(fullname__icontains=query) | Q(email__icontains=query) | Q(phone__icontains=query))
-        for el in contacts:
-            print(el.fullname)
-    return render(request, 'contacts/search_results_contacts.html', {"contacts": contacts, "query": query})
-
-
 """
 Notes
 """
 
 
-@login_required
 def my_notes(request):
-    notes = Note.objects.filter(user=request.user).all()  # noqa
+    notes = Note.objects.all()  # noqa
     tag = request.GET.get('tag')
     if tag:
         notes = notes.filter(tags__name__icontains=tag)
-    top_tags = Tag.objects.filter(note__user=request.user).annotate(count=Count('note')).order_by('-count')[:10]
+    top_tags = Tag.objects.annotate(count=Count('note')).order_by('-count')[:10]
     return render(request, "contacts/my_notes.html", context={"notes": notes, "top_tags": top_tags})
 
 
-@login_required
 def add_note(request):
     form = NoteForm()
     if request.method == "POST":
@@ -136,11 +125,9 @@ def add_note(request):
             text = form.cleaned_data['text']
             description = form.cleaned_data['description']
             tags_input = form.cleaned_data['tags']
-
             new_note = Note.objects.create(
                 text=text,
                 description=description,
-                user=request.user,
             )
             tags_list = [tag.strip() for tag in tags_input.split(',') if tag.strip()]
             for tag_name in tags_list:
@@ -150,9 +137,8 @@ def add_note(request):
     return render(request, "contacts/add_note.html", context={"form": form})
 
 
-@login_required
 def edit_note(request, note_id):
-    note = get_object_or_404(Note, id=note_id, user=request.user)
+    note = get_object_or_404(Note, id=note_id)
     if request.method == "POST":
         form = NoteForm(request.POST, instance=note)
         if form.is_valid():
@@ -183,9 +169,8 @@ def edit_note(request, note_id):
     return render(request, "contacts/edit_note.html", {"form": form, "note": note})
 
 
-@login_required
 def delete_note(request, note_id):
-    note = get_object_or_404(Note, id=note_id, user=request.user)
+    note = get_object_or_404(Note, id=note_id)
     if request.method == "POST":
         tags_to_delete = list(note.tags.all())
         note.delete()
@@ -196,10 +181,122 @@ def delete_note(request, note_id):
     return render(request, "contacts/delete_note.html", context={"note": note})
 
 
-@login_required
 def search_results_notes(request):
-    notes = Note.objects.filter(user=request.user).all()  # noqa
     query = request.GET.get('q')
+    tag = request.GET.get('tag')
+
     if query:
-        notes = notes.filter(Q(text__icontains=query) | Q(tags__name__icontains=query))
-    return render(request, 'contacts/search_results_notes.html', {'notes': notes, 'query': query})
+        matching_tags = Tag.objects.filter(name__icontains=query)
+        matching_notes = Note.objects.filter(tags__in=matching_tags).distinct()
+        if tag:
+            matching_notes = matching_notes.filter(tags__name__iexact=tag.lower())
+
+        return render(request, 'contacts/search_results_notes.html', {'results': matching_notes, 'query': query})
+    else:
+        return render(request, 'contacts/search_results_notes.html', {'results': [], 'query': query})
+
+
+def search_results_contacts(request):
+    query = request.GET.get('q')
+    tag = request.GET.get('tag')
+
+    if query:
+        matching_tags = Tag.objects.filter(name__icontains=query)
+        matching_notes = Note.objects.filter(tags__in=matching_tags).distinct()
+        if tag:
+            matching_notes = matching_notes.filter(tags__name__iexact=tag.lower())
+
+        return render(request, 'contacts/search_results_notes.html', {'results': matching_notes, 'query': query})
+    else:
+        return render(request, 'contacts/search_results_notes.html', {'results': [], 'query': query})
+
+
+"""
+Files
+"""
+
+
+def my_files(request):
+    files = File.objects.all()  # noqa
+    return render(request, 'contacts/my_files.html', {'files': files})
+
+
+def upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            file_to_upload = request.FILES['file']
+            file_extension = os.path.splitext(file_to_upload.name)[1].lower()
+            # video upload
+            if file_extension in ['.mov', '.mp4', '.avi', '.mkv', '.wmv']:
+                uploaded_file = cloudinary.uploader.upload(
+                    file_to_upload,
+                    resource_type="video",
+                    folder="uploads/videos/"
+                )
+                file_url = uploaded_file['secure_url']
+                file_object = File.objects.create(
+                    url=file_url,
+                    name=file_to_upload.name
+                )
+                return redirect(reverse("contacts:my_files"))
+            # image upload
+            elif file_extension in ['.jpeg', '.jpg', '.png']:
+                uploaded_file = cloudinary.uploader.upload(
+                    file_to_upload,
+                    resource_type="image",
+                    folder="uploads/images/"
+                )
+                file_url = uploaded_file['secure_url']
+                file_object = File.objects.create(
+                    url=file_url,
+                    name=file_to_upload.name
+                )
+                return redirect(reverse("contacts:my_files"))
+            # document upload
+            elif file_extension in ['.pdf', '.docx', '.xlsx']:
+                uploaded_file = cloudinary.uploader.upload(
+                    file_to_upload,
+                    resource_type="auto",
+                    folder="uploads/documents/"
+                )
+                file_url = uploaded_file['secure_url']
+                file_object = File.objects.create(
+                    url=file_url,
+                    name=file_to_upload.name
+                )
+                return redirect(reverse("contacts:my_files"))
+
+            # audio upload
+            elif file_extension in ['.mp3', '.wav']:
+                uploaded_file = cloudinary.uploader.upload(
+                    file_to_upload,
+                    resource_type="auto",
+                    folder="uploads/audio/"
+                )
+                file_url = uploaded_file['secure_url']
+                file_object = File.objects.create(
+                    url=file_url,
+                    name=file_to_upload.name
+                )
+                return redirect(reverse("contacts:my_files"))
+            else:
+                error_message = "Invalid file format. Please upload a video file (MOV, MP4, AVI, MKV, WMV), image file (JPEG, JPG, PNG), document (PDF, DOCX, XLSX) or audio file (MP3, WAV)."
+                return render(request, 'contacts/upload_file.html', {'form': form, 'error_message': error_message})
+    else:
+        form = UploadFileForm()
+
+    return render(request, 'contacts/upload_file.html', {'form': form})
+
+
+def download_file(request, file_url):
+    file_name = file_url.split('/')[-1]  # get the filename from the URL
+    response = requests.get(file_url, stream=True)  # get the file content from Cloudinary
+
+    if response.status_code == 200:
+        # Set the Content-Disposition header to force download
+        response = HttpResponse(response.content, content_type='application/octet-stream')
+        response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+        return response
+    else:
+        return HttpResponse("File not found", status=response.status_code)

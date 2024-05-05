@@ -1,0 +1,110 @@
+{% extends 'Personal_Assistant_WEB/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/styles_edit_profile.css' %}">
+<div class="container-xl px-4 mt-4">
+    <div class="row">
+        <div class="col-xl-4">
+            <!-- Profile picture card-->
+            <div class="card mb-4 mb-xl-0">
+                <div class="card-header">Profile Picture</div>
+                <div class="card-body text-center">
+                    <!-- Profile picture image-->
+                    <img src="{{ profile.avatar.url }}" alt="User Avatar"
+                         class="rounded-circle img-fluid" style="width: 150px;">
+                    <!-- Profile picture help block-->
+                    <div class="small font-italic text-muted mb-4" style="margin-top: 23px">JPG, JPEG or PNG no larger than 5 MB</div>
+                    <!-- Profile picture upload button-->
+                    <a href="{% url 'profiles:upload_avatar' user.username %}" class="btn btn-primary mt-1">Upload new image</a>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <!-- Account details card-->
+            <div class="card mb-4">
+                <div class="card-header">Account Details</div>
+                <div class="card-body">
+                    <form id="profileForm" action="{% url 'profiles:edit_profile' profile_name=request.user.profile %}"
+                          method="post">
+                        {% csrf_token %}
+                        <!-- Form Group (username)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="inputUsername">Username</label>
+                            <input class="form-control" id="inputUsername" name="username" type="text"
+                                   placeholder="Enter your username" value="{{ request.user.username }}">
+                        </div>
+                        <!-- Form Row-->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (first name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputFirstName">First name</label>
+                                <input class="form-control" id="inputFirstName" name="first_name" type="text"
+                                       placeholder="Enter your first name" value="{{ request.user.first_name }}">
+                            </div>
+                            <!-- Form Group (last name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputLastName">Last name</label>
+                                <input class="form-control" id="inputLastName" name="last_name" type="text"
+                                       placeholder="Enter your last name" value="{{ request.user.last_name }}">
+                            </div>
+                        </div>
+                        <!-- Form Row-->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (organization name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputOccupation">Occupation</label>
+                                <input class="form-control" id="inputOccupation" name="occupation" type="text"
+                                       placeholder="Enter your organization name" value="{{ profile.occupation }}">
+                            </div>
+                            <!-- Form Group (birthday)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputBirthday">Birthday</label>
+                                <input class="form-control" id="inputBirthday" name="birth_date" type="date"
+                                       placeholder="Enter your birthday" value="{{ profile.birth_date|date:'Y-m-d' }}">
+                            </div>
+                        </div>
+                        <!-- Form Group (email address)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="inputEmailAddress">Email address</label>
+                            <input class="form-control" id="inputEmailAddress" name="email" type="email"
+                                   placeholder="Enter your email address" value="{{ request.user.email }}">
+                        </div>
+                        <!-- Form Group (address)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="inputAddress">Address</label>
+                            <input class="form-control" id="inputAddress" name="address" type="text"
+                                   placeholder="Enter your address" value="{{ profile.address }}">
+                        </div>
+                        <!-- Form Row-->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (phone number)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputPhone">Phone number</label>
+                                <input class="form-control" id="inputPhone" name="phone_number" type="tel"
+                                       placeholder="Enter your phone number" value="{{ profile.phone_number }}">
+                            </div>
+                            <!-- Form Group (mobile number)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputMobile">Mobile number</label>
+                                <input class="form-control" id="inputMobile" name="mobile_number" type="tel"
+                                       placeholder="Enter your mobile number" value="{{ profile.mobile_number }}">
+                            </div>
+                        </div>
+                        <!-- Save changes button-->
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-primary ms-1" type="submit">Save changes</button>
+                            </div>
+                            <div class="col text-end">
+                                <a href="{% url 'profiles:my_profile' user.username %}" class="btn btn-secondary">Back to Profile</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

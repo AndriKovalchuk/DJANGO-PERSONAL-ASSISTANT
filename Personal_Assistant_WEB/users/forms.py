@@ -3,8 +3,6 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import CharField, TextInput, EmailInput, EmailField, PasswordInput
 from django import forms
 
-from .models import Profile
-
 
 class RegistrationForm(UserCreationForm):
     username = CharField(max_length=150, min_length=3, required=True,
@@ -30,9 +28,13 @@ class LoginForm(AuthenticationForm):
         fields = ['username', 'password']
 
 
-class ProfileForm(forms.ModelForm):
-    avatar = forms.ImageField(widget=forms.FileInput())
-
+class UserEditForm(forms.ModelForm):
     class Meta:
-        model = Profile
-        fields = ['avatar']
+        model = User
+        fields = ['username', 'first_name', 'last_name']
+
+    widgets = {
+        'username': forms.TextInput(attrs={'class': 'form-control', "id": "inputUsername"}),
+        'first_name': forms.TextInput(attrs={'class': 'form-control', "id": "firstName"}),
+        'last_name': forms.TextInput(attrs={'class': 'form-control', "id": "lastName"}),
+    }

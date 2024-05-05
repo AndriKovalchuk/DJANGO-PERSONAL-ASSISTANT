@@ -1,52 +1,84 @@
-{% extends "contacts/base.html" %}
+{% extends "Personal_Assistant_WEB/base.html" %}
 {% load i18n %}
-
 {% block content %}
-<div class="container mt-3">
-    <h1 class="custom-h1">{% trans "Edit Contact" %}</h1>
-    <form method="post">
-        {% if form.errors and form.non_field_errors %}
-        <div class="alert alert-danger" role="alert">
-            {{ form.non_field_errors }}
+<div class="container-xl mt-4">
+    <p class="fs-1 fw-bold">{% trans "Edit Contact" %}</p>
+    <div class="row">
+        <div class="col-xl-8">
+            <!-- Account details card-->
+            <div class="card mb-4 bg-light">
+                <div class="card-header">Contact Details</div>
+                {% if form.errors and form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <form id="profileForm" action="{% url 'contacts:edit_contact' contact.id %}" method="post">
+                        {% csrf_token %}
+                        <!-- Form Group (fullname)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="inputContactFullname">Full Name</label>
+                            <input class="form-control" id="inputContactFullname" name="fullname" type="text"
+                                   placeholder="Enter the full name" value="{{ contact.fullname }}">
+                            {% if form.fullname.errors %}
+                            <p class="text-danger">{{ form.fullname.errors }}</p>
+                            {% endif %}
+                        </div>
+                        <!-- Form Row-->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (phone)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputContactPhone">Phone</label>
+                                <input class="form-control" id="inputContactPhone" name="phone" type="tel"
+                                       placeholder="Enter the phone number" value="{{ contact.phone }}">
+                                {% if form.phone.errors %}
+                                <p class="text-danger">{{ form.phone.errors }}</p>
+                                {% endif %}
+                            </div>
+                            <!-- Form Group (email)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputContactEmail">Email</label>
+                                <input class="form-control" id="inputContactEmail" name="email" type="email"
+                                       placeholder="Enter the email address" value="{{ contact.email }}">
+                                {% if form.email.errors %}
+                                <p class="text-danger">{{ form.email.errors }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Form Row-->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (address)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputContactAddress">Address</label>
+                                <input class="form-control" id="inputContactAddress" name="address" type="text"
+                                       placeholder="Enter the address" value="{{ contact.address }}">
+                                {% if form.address.errors %}
+                                <p class="text-danger">{{ form.address.errors }}</p>
+                                {% endif %}
+                            </div>
+                            <!-- Form Group (birthday)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputContactBirthday">Birthday</label>
+                                <input class="form-control" id="inputContactBirthday" name="birthday" type="date"
+                                       placeholder="Enter your birthday" value="{{ contact.birthday|date:'Y-m-d' }}">
+                                {% if form.birthday.errors %}
+                                <p class="text-danger">{{ form.birthday.errors }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-primary ms-1" type="submit">Save changes</button>
+                            </div>
+                            <div class="col text-end">
+                                <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">Back to Contacts</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        {% endif %}
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="id_fullname">{% trans "Full Name:" %}</label>
-            <input type="text" id="id_fullname" name="fullname" class="form-control" value="{{ contact.fullname }}">
-            {% if form.fullname.errors %}
-                <p class="text-danger">{{ form.fullname.errors }}</p>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            <label for="id_address">{% trans "Address:" %}</label>
-            <input type="text" id="id_address" name="address" class="form-control" value="{{ contact.address }}">
-            {% if form.address.errors %}
-                <p class="text-danger">{{ form.address.errors }}</p>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            <label for="id_phone">{% trans "Phone:" %}</label>
-            <input type="text" id="id_phone" name="phone" class="form-control" value="{{ contact.phone }}">
-            {% if form.phone.errors %}
-                <p class="text-danger">{{ form.phone.errors }}</p>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            <label for="id_email">{% trans "Email:" %}</label>
-            <input type="email" id="id_email" name="email" class="form-control" value="{{ contact.email }}">
-        </div>
-        <div class="form-group">
-            <label for="id_birthday">{% trans "Birthday:" %}</label>
-            <input type="date" id="id_birthday" name="birthday" class="form-control" value="{{ contact.birthday }}">
-            {% if form.birthday.errors %}
-                <p class="text-danger">{{ form.birthday.errors }}</p>
-            {% endif %}
-        </div>
-        <div style="margin-top: 20px;">
-            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
-            <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
-        </div>
-    </form>
-</div>
+    </div>
+</div>`
 {% endblock %}

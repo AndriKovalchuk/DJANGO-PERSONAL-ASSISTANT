@@ -1,6 +1,6 @@
 from django.contrib.auth import logout
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.contrib import messages
@@ -8,7 +8,7 @@ from django.views.generic import DetailView, TemplateView
 from django.contrib.auth.views import PasswordResetView
 
 from .forms import RegistrationForm
-from .models import Profile
+from profiles.models import Profile  # noqa
 
 
 class RegisterView(View):
@@ -17,7 +17,7 @@ class RegisterView(View):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(to="contacts:main")
+            return redirect(to="main")
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
@@ -33,13 +33,26 @@ class RegisterView(View):
         return render(request, self.template_name, context={"form": form})
 
 
+def register_user(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            Profile.objects.create(user=user)
+            messages.success(request, f"Registration of {user.username} has been successfully completed.")
+            return redirect('users:signin')
+    else:
+        form = RegistrationForm()
+    return render(request, 'users/register.html', {'form': form})
+
+
 class ProfileDetailView(DetailView):
     model = Profile
     template_name = 'profile.html'
     context_object_name = 'user_profile'
 
     def get_object(self, queryset=None):
-        return self.request.user.profile
+        return get_object_or_404(Profile, user=self.request.user)
 
 
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):

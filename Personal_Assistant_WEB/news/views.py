@@ -113,7 +113,6 @@ def news_view(request):
         cache.set(WEATHER_CACHE_KEY, weather_data, timeout=900)
         cache.set(WEATHER_FORECAST_CACHE_KEY, weather_forecast_data, timeout=900)
 
-
         # IN CASE EXCHANGE RATES ARE NOT UPDATED
         for currency in ['USD', 'EUR', 'PLN']:
             try:
@@ -286,4 +285,4 @@ def news_view(request):
 
         }
 
-    return render(request, 'news/index.html', context={'page_title': 'News and Statistics', 'data': view_data})
+    return render(request, 'news/news.html', context={'page_title': 'News and Statistics', 'data': view_data})

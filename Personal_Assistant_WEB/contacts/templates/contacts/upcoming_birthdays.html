@@ -1,28 +1,36 @@
-{% extends 'contacts/base.html' %}
+{% extends 'Personal_Assistant_WEB/base.html' %}
 {% load i18n %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>{% trans "Upcoming birthdays in the following 7 days" %}</h2>
-    <div class="row mt-3">
+<div class="container mt-3">
+    <p class="fs-1 fw-bold">{% trans "Upcoming birthdays in the following 7 days" %}</p>
+    <div class="row">
         {% if upcoming %}
-            {% for contact, turning_age, days_left_till_birthday in upcoming %}
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ contact.fullname }}</h5>
-                            <p class="card-text">Birthday: {{ contact.birthday|date:"F j" }}</p>
-                            <p class="card-text">Days left: {{ days_left_till_birthday }} day(s)</p>
-                            <p class="card-text">Turning: {{ turning_age }} year(s) old</p>
+        {% for contact, turning_age, days_left_till_birthday in upcoming %}
+        <div class="col-md-6 col-xl-3">
+            <div class="card bg-light" style="width: 18rem; height: 13rem; margin-bottom: 20px; margin-top: 20px;">
+                <div class="card-body text-center">
+                    <div class="media align-items-center"><span></span>
+                        <div class="media-body overflow-hidden">
+                            <h3 class="card-text mb-2">{{ contact.fullname }}</h3>
+                            <p class="card-text" style="margin-bottom: 30px">
+                            <p title="Phone">Birthday: {{ contact.birthday|date:"F j" }}</p>
+                            <p title="Phone">Days left: {{ days_left_till_birthday }} day(s)</p>
+                            <p title="Phone">Turning: {{ turning_age }} year(s) old</p>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
-        {% else %}
-            <div class="col">
-                <p>{% trans "No upcoming birthdays." %}</p>
             </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col">
+            <p>{% trans "No upcoming birthdays." %}</p>
+        </div>
         {% endif %}
+    </div>
+    <div class="col text-end">
+        <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">Back to Contacts</a>
     </div>
 </div>
 {% endblock %}

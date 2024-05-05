@@ -1,0 +1,64 @@
+{% extends "Personal_Assistant_WEB/base.html" %}
+{% load i18n %}
+{% block content %}
+<div class="container-xl mt-4">
+    <p class="fs-1 fw-bold">{% trans "Edit Note" %}</p>
+    <div class="row">
+        <div class="col-xl-8">
+            <!-- Note details card-->
+            <div class="card mb-4 bg-light">
+                <div class="card-header">Note Details</div>
+                {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            {{ error }}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <form id="profileForm" action="{% url 'notes:edit_note' note.id %}" method="post">
+                        {% csrf_token %}
+                        <!-- Form Group (text)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="inputNoteText">Text</label>
+                            <input class="form-control" id="inputNoteText" name="text" type="text"
+                                   placeholder="Enter the text" value="{{ note.text }}">
+                            {% if form.text.errors %}
+                            <p class="text-danger">{{ form.text.errors }}</p>
+                            {% endif %}
+                        </div>
+                        <!-- Form Group (description)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="inputNoteDescription">Description</label>
+                            <input class="form-control" id="inputNoteDescription" name="description" type="text"
+                                   placeholder="Enter the description" value="{{ note.description }}">
+                            {% if form.description.errors %}
+                            <p class="text-danger">{{ form.description.errors }}</p>
+                            {% endif %}
+                        </div>
+                        <!-- Form Group (tags)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="InputNoteTags">Tags</label>
+                            <input class="form-control" id="InputNoteTags" name="tags" type="text"
+                                   placeholder="Enter the tags" value="{% for tag in note.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+                            {% if form.tags.errors %}
+                            <p class="text-danger">{{ form.tags.errors }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-primary ms-1" type="submit">{% trans "Save changes" %}</button>
+                            </div>
+                            <div class="col text-end">
+                                <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">{% trans "Back to Contacts" %}</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

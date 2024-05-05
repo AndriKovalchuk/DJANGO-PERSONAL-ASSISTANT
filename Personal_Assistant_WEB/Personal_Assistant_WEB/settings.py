@@ -30,6 +30,9 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
 
+MEDIA_ROOT = BASE_DIR / 'static' / 'images'
+MEDIA_URL = '/media/'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -44,6 +47,8 @@ ALLOWED_HOSTS = ['192.168.50.177', '127.0.0.1', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    "live_chat",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -55,8 +60,8 @@ INSTALLED_APPS = [
     "notes",
     "news",
     "filemanager",
-    "live_chat",
     "channels",
+    "profiles",
 ]
 
 MIDDLEWARE = [
@@ -75,7 +80,7 @@ ROOT_URLCONF = "Personal_Assistant_WEB.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'templates')],
+        "DIRS": [os.path.join(BASE_DIR, 'Personal_Assistant_WEB', 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -90,6 +95,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "Personal_Assistant_WEB.wsgi.application"
+
+# Daphne
+ASGI_APPLICATION = "Personal_Assistant_WEB.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -136,8 +152,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-STATIC_URL = "static/"
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+STATIC_URL = "/static/"
 
 LOGIN_URL = "/users/signin"
 LOGIN_REDIRECT_URL = "/"

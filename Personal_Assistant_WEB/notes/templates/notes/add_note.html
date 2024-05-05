@@ -1,0 +1,39 @@
+{% extends "Personal_Assistant_WEB/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-3 ">
+    <p class="fs-1 fw-bold">{% trans "Add Note" %}</p>
+    <div class="row">
+        <div class="col-xl-8">
+            <!-- Note details card-->
+            <div class="card mb-4 bg-light">
+                <div class="card-header">Note Details</div>
+                {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            {{ error }}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <form id="noteForm" action="{% url 'notes:add_note' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-primary ms-1" type="submit">{% trans "Save changes" %}</button>
+                            </div>
+                            <div class="col text-end">
+                                <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">{% trans "Back to Contacts" %}</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

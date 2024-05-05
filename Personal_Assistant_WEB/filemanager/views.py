@@ -191,7 +191,7 @@ def delete_file(request, pk):
                 print(f'Failed to delete file from Cloudinary: {e}')
         return redirect('filemanager:my_files')
 
-    return render(request, 'filemanager/delete.html',
+    return render(request, 'filemanager/delete_file.html',
                   context={'page_title': 'Delete File',
                            "form_action": reverse("filemanager:delete_file", args=[file_instance.pk]),
                            "back_list": reverse("filemanager:my_files"),
@@ -249,7 +249,7 @@ def delete_category(request, category_id):
         category.delete()
         return redirect('filemanager:manage_categories')
 
-    return render(request, 'filemanager/delete.html',
+    return render(request, 'filemanager/delete_file.html',
                   context={'page_title': 'Delete Category',
                            "form_action": reverse("filemanager:delete_category", args=[category.pk]),
                            "back_list": reverse("filemanager:manage_categories"),

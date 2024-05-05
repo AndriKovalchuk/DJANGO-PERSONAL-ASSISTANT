@@ -1,6 +1,6 @@
 from django.db import models
 
-from users.models import User  # noqa
+from django.contrib.auth.models import User  # noqa
 
 
 class Contact(models.Model):

@@ -1,44 +1,49 @@
-{% extends "contacts/base.html" %}
+{% extends "Personal_Assistant_WEB/base.html" %}
+{% load static %}
 {% load i18n %}
-
 {% block content %}
-
 <div class="container mt-3">
-    <h1 class="custom-h1">{% trans "My Contacts" %}</h1>
+    <p class="fs-1 fw-bold">{% trans "Contacts" %}</p>
     <div class="card-body d-flex justify-content-between align-items-center" style="margin-bottom: 20px;">
         <div>
             <a href="{% url 'contacts:add_contact' %}" class="btn btn-primary">{% trans "Add Contact" %}</a>
             <a href="{% url 'contacts:upcoming_birthdays' %}" class="btn btn-primary ml-2">{% trans "Upcoming Birthdays" %}</a>
         </div>
-        <form class="row g-2 align-items-center search-block" method="GET" action="{% url 'contacts:search_results_contacts' %}">
+        <form class="row g-2 align-items-center search-block" method="GET"
+              action="{% url 'contacts:search_results_contacts' %}">
             <div class="col-auto">
-                <input class="form-control" type="search" name="q" placeholder="{% trans 'Search Contacts' %}" aria-label="{% trans 'Search' %}">
+                <input class="form-control" type="search" name="q" placeholder="{% trans 'Search Contacts' %}"
+                       aria-label="{% trans 'Search' %}">
             </div>
             <div class="col-auto">
                 <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
             </div>
         </form>
     </div>
-    {% for contact in contacts %}
-    <div class="card mb-3">
-        <div class="card-header" style="font-weight: bold;">
-            {{ forloop.counter }}. {{ contact.fullname }}
-        </div>
-        <div class="card-body">
-            <p class="card-text">{% trans 'Address' %}: {{ contact.address }}</p>
-            <p class="card-text">{% trans 'Phone' %}: {{ contact.phone }}</p>
-            <p class="card-text">{% trans 'Email' %}: {{ contact.email }}</p>
-            <p class="card-text">{% trans 'Birthday' %}: {{ contact.birthday }}</p>
-        </div>
-        <div class="card-body">
-            <p class="ml-auto" style="margin-top: -20px; margin-bottom: 0px;">
-                <a href="{% url 'contacts:edit_contact' contact.id %}" class="btn btn-primary">{% trans 'Edit' %}</a>
-                <a href="{% url 'contacts:delete_contact' contact.id %}" class="btn btn-danger">{% trans 'Delete' %}</a>
-            </p>
-        </div>
 
+    <div class="container">
+        <div class="row">
+            {% for contact in contacts %}
+            <div class="col-md-6 col-xl-3">
+                <div class="card bg-light" style="width: 18rem; height: 19rem; margin-bottom: 20px; margin-top: 20px;">
+                    <div class="card-body">
+                        <div class="media align-items-center"><span></span>
+                            <div class="media-body overflow-hidden text-center">
+                                <h3 class="card-text mb-2">{{ contact.fullname }}</h3>
+                                <p class="card-text" style="margin-bottom: 30px">
+                                <p title="Phone">Phone: {{ contact.phone }}</p>
+                                <p title="Phone">Email: {{ contact.email }}</p>
+                                <p title="Phone">Address: {{ contact.address }}</p>
+                                <p title="Phone">Birthday: {{ contact.birthday }}</p>
+                                <a href="{% url 'contacts:edit_contact' contact.id %}" class="btn btn-primary">{% trans 'Edit' %}</a>
+                                <a href="{% url 'contacts:delete_contact' contact.id %}" class="btn btn-danger">{% trans 'Delete' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    {% endfor %}
-
 </div>
 {% endblock %}

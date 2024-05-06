@@ -9,10 +9,12 @@ from django.shortcuts import get_object_or_404
 import cloudinary
 import cloudinary.uploader
 import os
-from .forms import FileUploadForm, CategoryForm
+from .forms import FileUploadForm, CategoryForm, EditFileForm
 from .models import File
 from .models import Category
 from Personal_Assistant_WEB.settings import env  # noqa
+import requests
+from django.contrib import messages
 
 cloudinary.config(cloud_name=env('CLOUD_NAME'), api_key=env('CLOUD_API_KEY'), api_secret=env('CLOUD_API_SECRET'))
 
@@ -23,10 +25,7 @@ def my_files(request):
 
     if request.GET.get('search'):
         query = request.GET.get('search')
-
-        files = files.filter(
-            Q(name__icontains=query)
-        )
+        files = files.filter(Q(name__icontains=query))
 
     items_per_page = 20
     paginator = Paginator(files, items_per_page)
@@ -42,10 +41,14 @@ def my_files(request):
 
     page_range = range(1, files_page.paginator.num_pages + 1)
 
+    # Перевіряємо чи існує категорія "Miscellaneous" для поточного користувача
+    miscellaneous_category, created = Category.objects.get_or_create(name='Miscellaneous', user=request.user)
+
     categories = Category.objects.filter(user=request.user)
     return render(request, 'filemanager/my_files.html',
                   {'page_title': 'Your uploaded files', 'files': files_page, 'categories': categories,
                    "page_range": page_range})
+
 
 
 @login_required
@@ -92,9 +95,9 @@ def upload_file(request):
 
             else:
                 error_message = "Invalid file format. Please upload a video file (MOV, MP4, AVI, MKV, WMV), " \
-                                "image file (JPEG, JPG, PNG), document (PDF, DOCX, XLSX) or audio file (MP3, WAV)."
-                # Pass form and error message to the template
-                return render(request, 'filemanager/add_file.html', {'form': form, 'error_message': error_message})
+                    "image file (JPEG, JPG, PNG), document (PDF, DOCX, XLSX) or audio file (MP3, WAV)."
+                messages.error(request, error_message)  # Додати Alert помилки
+                return render(request, 'filemanager/add_file.html', {'form': form})
 
             # Creating a new file object in the Django model with the Cloudinary URL
             file_instance = File.objects.create(
@@ -147,31 +150,44 @@ def files_by_categories(request, category_id):
                   {'page_title': f'Files by "{category.name}"', 'files': files_page, 'categories': categories,
                    "page_range": page_range})
 
+@login_required
+def edit_file(request, file_id):
+    file_instance = get_object_or_404(File, pk=file_id)
+    
+    if request.method == 'POST':
+        form = EditFileForm(request.user, request.POST, instance=file_instance)
+        
+        if form.is_valid():
+            form.save()
+            return redirect('filemanager:my_files')
+    else:
+        form = EditFileForm(request.user, instance=file_instance)
+        
+    return render(request, 'filemanager/edit_file.html', {'page_title': 'Edit File', 'form': form, 'file': file_instance})
 
 @login_required
 def download_file(request, file_id):
     file_instance = get_object_or_404(File, pk=file_id)
     try:
-        with default_storage.open(file_instance.file.name) as f:
-            response = HttpResponse(f.read(), content_type='application/octet-stream')
-            response['Content-Disposition'] = f'attachment; filename="{file_instance.file.name}"'
-            return response
-    except FileNotFoundError:
-        return HttpResponse("File not found", status=404)
+        # Отримуємо URL файлу з Cloudinary
+        file_url, options = cloudinary.utils.cloudinary_url(file_instance.url)
 
+        # Завантажуємо файл за URL
+        response = requests.get(file_url)
 
-@login_required
-def edit_file(request, file_id):
-    file_instance = get_object_or_404(File, pk=file_id)
-    if request.method == 'POST':
-        form = FileUploadForm(request.user, request.POST, request.FILES, instance=file_instance)
-        if form.is_valid():
-            form.save()
-            return redirect('filemanager:my_files')
-    else:
-        form = FileUploadForm(request.user, instance=file_instance)
-    return render(request, 'filemanager/add_file.html',
-                  {'page_title': 'Edit File', 'form': form, 'file': file_instance})
+        # Перевіряємо успішність запиту
+        if response.status_code == 200:
+            # Повертаємо вміст файлу у відповіді HTTP
+            file_content = response.content
+            http_response = HttpResponse(file_content, content_type='application/octet-stream')
+            http_response['Content-Disposition'] = f'attachment; filename="{file_instance.name}"'
+            return http_response
+        else:
+            return HttpResponse("Failed to download file", status=response.status_code)
+
+    except Exception as e:
+        print(f'Failed to download file: {e}')
+        return HttpResponse("Failed to download file", status=500)
 
 
 @login_required
@@ -199,7 +215,6 @@ def delete_file(request, pk):
                            'name': file_instance.name
                            })
 
-
 @login_required
 def create_category(request):
     if request.method == 'POST':
@@ -211,8 +226,8 @@ def create_category(request):
             return redirect('filemanager:my_files')
     else:
         form = CategoryForm()
-    uncategorized, created = Category.objects.get_or_create(name='Miscellaneous ', user=request.user,
-                                                            defaults={'name': 'Miscellaneous'})
+    miscellaneous_category, created = Category.objects.get_or_create(name='Miscellaneous', user=request.user)
+
     return render(request, 'filemanager/create_category.html', {'page_title': 'Create Category', 'form': form})
 
 

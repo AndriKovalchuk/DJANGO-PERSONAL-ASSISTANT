@@ -1,28 +1,39 @@
 {% extends "Personal_Assistant_WEB/base.html" %}
 {% load i18n %}
 {% block content %}
-<div class="row">
-    <div class="col-md-9">
-        <div class="container mt-3">
-            <p class="fs-1 fw-bold">{% trans "My Notes" %}</p>
+<div class="container mt-3">
+    <div class="row mb-3">
+        <div class="col mt-3">
+            <h1 class="fs-1 fw-bold">{% trans "My Notes" %}</h1>
+        </div>
+        {% if not query %}
+        <div class="col text-end mt-3">
+            <a href="{% url 'notes:add_note' %}" class="btn btn-primary">{% trans 'Add Note' %}</a>
+        </div>
+        {% else %}
+        <div class="col text-end mt-3">
+            <a href="{% url 'notes:my_notes' %}" class="btn btn-secondary">Back to Notes</a>
+        </div>
+        {% endif %}
 
-            <div class="card-body d-flex justify-content-between align-items-center" style="margin-bottom: 20px;">
-                <div>
-                    <a href="{% url 'notes:add_note' %}" class="btn btn-primary">{% trans 'Add Note' %}</a>
-
-                </div>
-                <form class="row g-2 align-items-center search-block" method="GET"
-                      action="{% url 'notes:search_results_notes' %}">
-                    <div class="col-auto">
-                        <input class="form-control" type="search" name="q" placeholder="{% trans 'Search Notes' %}"
-                               aria-label="{% trans 'Search' %}">
-                    </div>
-                    <div class="col-auto">
-                        <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
-                    </div>
-                </form>
-            </div>
-
+    </div>
+    <form class="row g-2 align-items-center search-block mb-3" method="GET" action="{% url 'notes:my_notes' %}">
+        <div class="col-auto">
+            <input class="form-control" type="search" name="q" placeholder="{% trans 'Search Notes' %}" aria-label="{% trans 'Search' %}">
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+        </div>
+    </form>
+    {% if query %}
+    {% if not notes %}
+    <div class="alert alert-danger" role="alert">
+        We're sorry, but no results were found matching by "{{ query }}". Please try again with different keywords or refine your search.
+    </div>
+    {% endif %}
+    {% endif %}
+    <div class="row">
+        <div class="col-md-9">
             {% for note in notes %}
             <div class="card mb-3">
                 <div class="card-header">
@@ -33,27 +44,51 @@
                     <p class="card-text">{% trans 'Tags' %}:
                         {% for tag in note.tags.all %}
                         #{{ tag.name }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}</p>
-                    <a href="{% url 'notes:edit_note' note.id %}" class="btn btn-primary">{% trans 'Edit' %}</a>
+                        {% endfor %}
+                    </p>
+                    <a href="{% url 'notes:edit_note' note.id %}" class="btn btn-primary">{% trans 'Edit' %} </a>
                     <a href="{% url 'notes:delete_note' note.id %}" class="btn btn-danger">{% trans 'Delete' %}</a>
+                    <!-- Кнопка для відкриття модального вікна для цієї нотатки -->
+                    <button type="button" class="btn btn-primary justify-content-end" data-bs-toggle="modal" data-bs-target="#noteModal{{ note.id }}">
+                        {% trans 'Open Note' %}
+                    </button>
+                </div>
+            </div>
+            <!-- Модальне вікно для відображення всієї нотатки -->
+            <div class="modal fade" id="noteModal{{ note.id }}" tabindex="-1" aria-labelledby="noteModalLabel{{ note.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="noteModalLabel{{ note.id }}">{{ note.text }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans 'Description' %}: {{ note.description }}</p>
+                            <p>{% trans 'Tags' %}:
+                                {% for tag in note.tags.all %}
+                                <a href="?tag={{ tag.name }}"># {{ tag.name }}</a>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% endfor %}
         </div>
-    </div>
-    <div class="col-md-3">
-        <!-- Displaying top 10 tags -->
-        <div class="mb-3">
-            <h3 class="mb-3 justify-content-between text-end top-ten">{% trans 'Top 10 Tags' %}</h3>
-            <ul class="list-group">
-                {% for tag in top_tags %}
-                <li class="list-group-item justify-content-between text-end top-tags">
-                    <span class="badge rounded-pill text-bg-primary">
-                        <a href="?tag={{ tag.name }}"># {{ tag.name }} ({{ tag.count }})</a>
-                    </span>
-                </li>
-                {% endfor %}
-            </ul>
+        <div class="col-md-3 order-first order-md-last">
+            <!-- Displaying top 10 tags -->
+            <div class="mb-3">
+                <h3 class="mb-3 justify-content-between text-end top-ten">{% trans 'Top 10 Tags' %}</h3>
+                <ul class="list-group">
+                    {% for tag in top_tags %}
+                    <li class="list-group-item justify-content-between text-end top-tags">
+                        <span class="badge rounded-pill text-bg-primary">
+                            <a href="?tag={{ tag.name }}"># {{ tag.name }} ({{ tag.count }})</a>
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 </div>

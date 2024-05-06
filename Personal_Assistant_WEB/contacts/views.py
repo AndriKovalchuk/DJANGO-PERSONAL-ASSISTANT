@@ -25,7 +25,12 @@ cloudinary.config(cloud_name=env('CLOUD_NAME'), api_key=env('CLOUD_API_KEY'), ap
 @login_required
 def my_contacts(request):
     contacts = Contact.objects.filter(user=request.user).all() if request.user.is_authenticated else []  # noqa
-    return render(request, "contacts/my_contacts.html", context={"contacts": contacts})
+    query = request.GET.get('q')
+    if query:
+        contacts = contacts.filter(
+            Q(fullname__icontains=query) | Q(email__icontains=query) | Q(phone__icontains=query)
+        )
+    return render(request, 'contacts/my_contacts.html', {"contacts": contacts, "query": query})
 
 
 @login_required
@@ -85,14 +90,3 @@ def upcoming_birthdays(request):
     upcoming = sorted(upcoming, key=lambda x: x[2])
 
     return render(request, "contacts/upcoming_birthdays.html", context={"upcoming": upcoming})
-
-
-@login_required
-def search_results_contacts(request):
-    contacts = Contact.objects.filter(user=request.user).all()  # noqa
-    query = request.GET.get('q')
-    if query:
-        contacts = contacts.filter(Q(fullname__icontains=query) | Q(email__icontains=query) | Q(phone__icontains=query))
-        for el in contacts:
-            print(el.fullname)
-    return render(request, 'contacts/search_contacts.html', {"contacts": contacts, "query": query})

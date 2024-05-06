@@ -27,7 +27,7 @@ def my_notes(request):
     if query:
         notes = notes.filter(Q(text__icontains=query) | Q(tags__name__icontains=query))
     top_tags = Tag.objects.filter(note__user=request.user).annotate(count=Count('note')).order_by('-count')[:10]
-    return render(request, "notes/my_notes.html", context={"notes": notes, "top_tags": top_tags, 'query': query})
+    return render(request, "notes/my_notes.html", context={"notes": notes, "top_tags": top_tags, 'query': query, "tag": tag})
 
 
 @login_required

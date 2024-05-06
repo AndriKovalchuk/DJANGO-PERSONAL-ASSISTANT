@@ -3,20 +3,33 @@
 
 {% block content %}
 <div class="container mt-3">
-    <p class="fs-1 fw-bold">{% trans "Upcoming birthdays in the following 7 days" %}</p>
+    <form id="daysForm" method="GET" action="{% url 'contacts:upcoming_birthdays' %}">
+        <label for="daysInput" class="form-label fs-3 mt-3">{% trans "Enter the number of days:" %}</label>
+        <input type="number" class="form-control" id="daysInput" name="days" value="{{ days }}" min="1" onchange="this.form.submit()">
+    </form>
+
+    <form id="MonthsForm" method="GET" action="{% url 'contacts:upcoming_birthdays' %}">
+        <label for="MonthRange" class="form-label fs-3 mt-3">{% trans "or select the month range" %}</label>
+        <input type="range" class="form-range" min="30" max="360" step="30" value="{{ days }}" name="days" id="MonthRange" onchange="this.form.submit()">
+    </form>
+
+    <p class="fs-4 mt-3">{% trans "Upcoming birthdays in the following" %}
+        {{ days }}
+        {% trans "day(s)" %}:
+    </p>
     <div class="row">
         {% if upcoming %}
         {% for contact, turning_age, days_left_till_birthday in upcoming %}
         <div class="col-md-6 col-xl-3">
-            <div class="card bg-light" style="width: 18rem; height: 13rem; margin-bottom: 20px; margin-top: 20px;">
+            <div class="card bg-light" style="margin-bottom: 20px; margin-top: 20px;">
                 <div class="card-body text-center">
                     <div class="media align-items-center"><span></span>
                         <div class="media-body overflow-hidden">
                             <h3 class="card-text mb-2">{{ contact.fullname }}</h3>
                             <p class="card-text" style="margin-bottom: 30px">
-                            <p title="Phone">Birthday: {{ contact.birthday|date:"F j" }}</p>
-                            <p title="Phone">Days left: {{ days_left_till_birthday }} day(s)</p>
-                            <p title="Phone">Turning: {{ turning_age }} year(s) old</p>
+                            <p title="{% trans 'Birthday' %}">{% trans 'Birthday' %}: {{ contact.birthday|date:"F j" }}</p>
+                            <p title="{% trans 'Days left' %}">{% trans 'Days left' %}: {{ days_left_till_birthday }} {% trans 'day(s)' %}</p>
+                            <p title="{% trans 'Turning' %}">{% trans 'Turning' %}: {{ turning_age }} {% trans 'year(s) old' %}</p>
                         </div>
                     </div>
                 </div>
@@ -24,13 +37,13 @@
         </div>
         {% endfor %}
         {% else %}
-        <div class="col">
+        <div class="col mt-5">
             <p>{% trans "No upcoming birthdays." %}</p>
         </div>
         {% endif %}
     </div>
     <div class="col text-end">
-        <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">Back to Contacts</a>
+        <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">{% trans "Back to Contacts" %}</a>
     </div>
 </div>
 {% endblock %}

@@ -1,4 +1,5 @@
 import re
+from datetime import date
 
 from django import forms
 from django.core.exceptions import ValidationError
@@ -22,8 +23,13 @@ class ContactForm(ModelForm):
             'birthday': DateTimeInput(attrs={"class": "form-control", "id": "birthdayInput"}),
         }
 
+    def birthday_validator(self):
+        birthday = self.cleaned_data.get('birthday')
+        if birthday > date.today():
+            raise ValidationError("Birthday cannot be in the future")
+        return birthday
+
     def phone_validator(self):
-        print("Phone validator method called")
         phone = self.cleaned_data.get('phone')
         regex = r'^\+?1?\d{9,15}$'
         if not re.match(regex, phone):
@@ -36,8 +42,11 @@ class ContactForm(ModelForm):
         print("Clean method called")
         cleaned_data = super().clean()
         phone = cleaned_data.get('phone')
+        birthday = cleaned_data.get('birthday')
         if phone:
             self.phone_validator()
+        if birthday:
+            self.birthday_validator()
         return cleaned_data
 
     def __init__(self, *args, **kwargs):

@@ -1,15 +1,16 @@
 {% extends 'Personal_Assistant_WEB/base.html' %}
+{% load i18n %}
 
 {% block title %}{{ page_title }}{% endblock %}
 
 {% block content %}
 <div class="row mb-3">
-    <div class="col">
-        <h1 class="card-title h3">{{ page_title }}</h1>
+    <div class="col mt-3">
+        <h1 class="fs-1 fw-bold">{{ page_title|trans }}</h1>
     </div>
-    <div class="col text-end">
-        <a href="{% url 'filemanager:create_category' %}" class="btn btn-primary">Add Category</a>
-        <a href="{% url 'filemanager:my_files' %}" class="btn btn-outline-secondary">View Files</a>
+    <div class="col text-end mt-3">
+        <a href="{% url 'filemanager:create_category' %}" class="btn btn-primary">{% trans "Add Category" %}</a>
+        <a href="{% url 'filemanager:my_files' %}" class="btn btn-secondary">{% trans "Back to Files" %}</a>
     </div>
 </div>
 <div class="row">
@@ -20,8 +21,8 @@
                 <table class="table m-0">
                     <thead>
                     <tr>
-                        <th scope="col">Category</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">{% trans "Category" %}</th>
+                        <th scope="col">{% trans "Actions" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -33,9 +34,9 @@
                         <td>
                             <div class="d-inline-flex gap-2">
                                 <a href="{% url 'filemanager:edit_category' category.id %}"
-                                   class="btn btn-sm btn-primary">Edit</a>
+                                   class="btn btn-sm btn-primary">{% trans "Edit" %}</a>
                                 <a href="{% url 'filemanager:delete_category' category.id %}"
-                                   class="btn btn-sm btn-danger">Delete</a>
+                                   class="btn btn-sm btn-danger">{% trans "Delete" %}</a>
                             </div>
                         </td>
                     </tr>
@@ -43,7 +44,7 @@
                     </tbody>
                 </table>
                 {% else %}
-                <p class="h5 m-0">You don't have any files. Please add a category to start organizing your documents.</p>
+                <p class="h5 m-0">{% trans "You don't have any files. Please add a category to start organizing your documents." %}</p>
                 {% endif %}
             </div>
         </div>

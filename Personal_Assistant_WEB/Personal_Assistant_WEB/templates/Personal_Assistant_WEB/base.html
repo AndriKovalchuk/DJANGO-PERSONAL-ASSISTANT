@@ -11,25 +11,25 @@
     <link rel="stylesheet" href="{% static 'css/main_page.css' %}">
 </head>
 <div class="d-flex flex-row-reverse">
-        <form action="{% url 'set_language' %}" method="post" class="m-0">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path }}">
-            <button type="submit" name="language" value="en"
-                    class="btn btn-link{% if request.LANGUAGE_CODE == 'en' %} active{% endif %}">
-                <img src="{% static 'images/flags/uk.png' %}" style="width: 30px; height: 30px"
-                     alt="English Flag">
-            </button>
-        </form>
-        <form action="{% url 'set_language' %}" method="post" class="m-0">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path }}">
-            <button type="submit" name="language" value="uk"
-                    class="btn btn-link{% if request.LANGUAGE_CODE == 'uk' %} active{% endif %}">
-                <img src="{% static 'images/flags/ua.png' %}" style="width: 30px; height: 30px"
-                     alt="Ukrainian Flag">
-            </button>
-        </form>
-    </div>
+    <form action="{% url 'set_language' %}" method="post" class="m-0">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" name="language" value="en"
+                class="btn btn-link{% if request.LANGUAGE_CODE == 'en' %} active{% endif %}">
+            <img src="{% static 'images/flags/uk.png' %}" style="width: 30px; height: 30px"
+                 alt="{% trans 'English Flag' %}">
+        </button>
+    </form>
+    <form action="{% url 'set_language' %}" method="post" class="m-0">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" name="language" value="uk"
+                class="btn btn-link{% if request.LANGUAGE_CODE == 'uk' %} active{% endif %}">
+            <img src="{% static 'images/flags/ua.png' %}" style="width: 30px; height: 30px"
+                 alt="{% trans 'Ukrainian Flag' %}">
+        </button>
+    </form>
+</div>
 <body style="background-image: url('{% static 'images/background_2.jpg' %}');">
 <div class="container-fluid" style="min-height: 100vh;">
     <div class="row header-box pt-3 mb-3">
@@ -106,6 +106,7 @@
         {% block content %} {% endblock %}
     </main>
     <div class="footer-text">{% trans "Image by jcomp on Freepik" %}</div>
+    <div class="footer-text-custom">{% trans "Copyright ©2024 Project Group 9" %}</div>
 </div>
 
 <!-- Add optimized JavaScript files here -->

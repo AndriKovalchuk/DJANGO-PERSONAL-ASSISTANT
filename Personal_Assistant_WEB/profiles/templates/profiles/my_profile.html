@@ -2,26 +2,25 @@
 {% load static %}
 {% load i18n %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/styles_edit_profile.css' %}">
 <section>
     <div class="container-xl px-4 mt-4">
         <div class="row">
             <div class="col-xl-4">
                 <div class="card mb-4 mb-xl-0">
-                    <div class="card-header">Profile Picture</div>
+                    <div class="card-header">{% trans "Profile Picture" %}</div>
                     <div class="card-body text-center">
-                        <img src="{{ profile.avatar.url }}" alt="User Avatar"
+                        <img src="{{ profile.avatar.url }}" alt="{% trans 'User Avatar' %}"
                              class="rounded-circle img-fluid" style="width: 150px;">
                         <h5 class="my-3">{{ profile.user.username }}</h5>
                         <p class="text-muted mb-1">{{ profile.occupation }}</p>
                         <p class="text-muted mb-4">{{ profile.address }}</p>
                         <div class="d-flex justify-content-center mb-2">
                             <button type="button" data-mdb-button-init data-mdb-ripple-init
-                                    class="btn btn-outline-primary ms-1">Message
+                                    class="btn btn-outline-primary ms-1">{% trans 'Message' %}
                             </button>
                             {% if user.is_authenticated %}
                             <a href="{% url 'profiles:edit_profile' user.username %}"
-                               class="btn btn-primary ms-1">Edit</a>
+                               class="btn btn-primary ms-1">{% trans 'Edit' %}</a>
                             {% endif %}
                         </div>
                     </div>
@@ -29,11 +28,11 @@
             </div>
             <div class="col-xl-8">
                 <div class="card mb-4">
-                    <div class="card-header">Account Details</div>
+                    <div class="card-header">{% trans "Account Details" %}</div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-3">
-                                <p class="mb-0">Full Name</p>
+                                <p class="mb-0">{% trans "Full Name" %}</p>
                             </div>
                             <div class="col-sm-9">
                                 <p class="text-muted mb-0">{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
@@ -42,7 +41,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <p class="mb-0">Occupation</p>
+                                <p class="mb-0">{% trans "Occupation" %}</p>
                             </div>
                             <div class="col-sm-9">
                                 <p class="text-muted mb-0">{{ profile.occupation }}</p>
@@ -51,7 +50,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <p class="mb-0">Email</p>
+                                <p class="mb-0">{% trans "Email" %}</p>
                             </div>
                             <div class="col-sm-9">
                                 <p class="text-muted mb-0">{{ profile.user.email }}</p>
@@ -60,7 +59,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <p class="mb-0">Phone</p>
+                                <p class="mb-0">{% trans "Phone" %}</p>
                             </div>
                             <div class="col-sm-9">
                                 <p class="text-muted mb-0">{{ profile.phone_number }}</p>
@@ -69,7 +68,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <p class="mb-0">Mobile</p>
+                                <p class="mb-0">{% trans "Mobile" %}</p>
                             </div>
                             <div class="col-sm-9">
                                 <p class="text-muted mb-0">{{ profile.mobile_number }}</p>
@@ -78,16 +77,16 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <p class="mb-0">Address</p>
+                                <p class="mb-0">{% trans "Address" %}</p>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-muted mb-0">{{ profile.address}}</p>
+                                <p class="text-muted mb-0">{{ profile.address }}</p>
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <p class="mb-0">Birthday</p>
+                                <p class="mb-0">{% trans "Birthday" %}</p>
                             </div>
                             <div class="col-sm-9">
                                 <p class="text-muted mb-0">{{ profile.birth_date }}</p>

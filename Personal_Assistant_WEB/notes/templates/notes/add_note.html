@@ -8,7 +8,7 @@
         <div class="col-xl-8">
             <!-- Note details card-->
             <div class="card mb-4 bg-light">
-                <div class="card-header">Note Details</div>
+                <div class="card-header">{% trans "Note Details" %}</div>
                 {% if form.errors %}
                 <div class="alert alert-danger" role="alert">
                     {% for field, errors in form.errors.items %}
@@ -27,7 +27,7 @@
                                 <button class="btn btn-primary ms-1" type="submit">{% trans "Save changes" %}</button>
                             </div>
                             <div class="col text-end">
-                                <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">{% trans "Back to Contacts" %}</a>
+                                <a href="{% url 'notes:my_notes' %}" class="btn btn-secondary">{% trans "Back to Notes" %}</a>
                             </div>
                         </div>
                     </form>

@@ -2,44 +2,73 @@
 {% load i18n %}
 
 {% block content %}
-<div class="container mt-3">
-    <h2>{% trans 'Login User' %}</h2>
-
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <span {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>{{ message }}</span>
-        {% endfor %}
+<!-- Login 5 - Bootstrap Brain Component -->
+<section class="p-3 p-md-4 p-xl-5">
+    <div class="container">
+        <div class="card border-light-subtle shadow-sm">
+            <div class="row g-0">
+                <div class="col-12 col-md-6 text-bg-primary">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div class="col-10 col-xl-8 py-3">
+                            <hr class="border-primary mb-4">
+                            <h2 class="h1 mb-4">{% trans "We make digital products that drive you to stand out." %}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="card-body p-3 p-md-4 p-xl-5">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-5">
+                                    <h3>{% trans "Log in" %}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        {% if form.errors and form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{form.non_field_errors}}
+                        </div>
+                        {% endif %}
+                        <form action="{% url 'users:signin' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row gy-3 gy-md-4 overflow-hidden">
+                                <div class="col-12">
+                                    <label for="username" class="form-label">{% trans "Username" %} <span class="text-danger">{{ form.errors.email }}</span></label>
+                                    <input type="username" class="form-control" name="username" id="username" placeholder="{% trans 'Enter your username' %}" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="password" class="form-label">{% trans "Password" %} <span class="text-danger">{{ form.errors.password }}</span></label>
+                                    <input type="password" class="form-control" name="password" id="password" placeholder="{% trans 'Enter your password' %}" required>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" name="remember_me"
+                                               id="remember_me">
+                                        <label class="form-check-label text-secondary" for="remember_me">
+                                            {% trans "Keep me logged in" %}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-grid">
+                                        <button class="btn bsb-btn-xl btn-primary" type="submit">{% trans "Log in now" %}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="row">
+                            <div class="col-12">
+                                <hr class="mt-5 mb-4 border-secondary-subtle">
+                                <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
+                                    <a href="{% url 'users:signup' %}" class="link-secondary text-decoration-none">{% trans "Create new account" %}</a>
+                                    <a href="{% url 'users:password_reset' %}" class="link-secondary text-decoration-none">{% trans "Forgot password" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    {% endif %}
-
-    {% if form.errors and form.non_field_errors %}
-    <div class="alert alert-danger" role="alert">
-        {{form.non_field_errors}}
-    </div>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label class="form-label">{% trans 'Username' %}
-                {{ form.username }}
-            </label>
-            <span>{{form.errors.username}}</span>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">{% trans 'Password' %}
-                {{ form.password }}
-            </label>
-            <span>{{form.errors.password}}</span>
-        </div>
-
-        <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
-        <button type="reset" class="btn btn-secondary">{% trans 'Reset' %}</button>
-
-        <div class="container mt-3">
-            <a href="{% url 'users:password_reset' %}" class="text-center" style="margin-left: -10px;"><i>{% trans 'Forgot Password?' %}</i></a>
-        </div>
-    </form>
-</div>
+</section>
 {% endblock %}

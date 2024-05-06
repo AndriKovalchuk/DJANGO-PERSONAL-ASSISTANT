@@ -1,12 +1,13 @@
 {% extends 'Personal_Assistant_WEB/base.html' %}
+{% load i18n %}
 
 {% block content %}
 <div class="row mb-3">
     <div class="col mt-3">
-        <h1 class="card-title h3 fs-1 fw-bold">Please select a picture to upload</h1>
+        <h1 class="card-title h3 fs-1 fw-bold">{% trans "Please select a picture to upload" %}</h1>
     </div>
     <div class="col text-end">
-        <a href="{% url 'profiles:edit_profile' user.username %}" class="btn btn-primary">Back to Edit Profile</a>
+        <a href="{% url 'profiles:edit_profile' user.username %}" class="btn btn-primary">{% trans "Back to Edit Profile" %}</a>
     </div>
 </div>
 <div class="row">
@@ -18,8 +19,8 @@
                     {{ form.as_p }}
                 </div>
                 <div class="card-footer">
-                    <button class="btn btn-primary" type="submit">Upload</button>
-                    <button class="btn btn-secondary" type="reset">Reset</button>
+                    <button class="btn btn-primary" type="submit">{% trans "Upload" %}</button>
+                    <button class="btn btn-secondary" type="reset">{% trans "Reset" %}</button>
                 </div>
             </form>
         </div>

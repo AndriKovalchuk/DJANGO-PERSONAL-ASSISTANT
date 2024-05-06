@@ -1,51 +1,91 @@
-### Django Project Group 9 - Personal Assistant
+# Personal Assistant Project
 
-#### Project Overview
+## Overview
 
-This project aims to develop a comprehensive personal assistant application using the Django framework. It includes various features such as file sorting, contact reminders, file uploading to cloud services, input validation, note editing and deletion, note search functionality, and authentication mechanisms.
+This Django project serves as a personal assistant web application, aimed at efficiently managing contacts, notes,
+files, user profiles, and providing news updates.
 
-1. **File Sorting by Categories**: Users can sort their files into categories (images, documents, videos, etc.) and view files based on selected categories.
-   
-2. **Birthday Reminders**: Displays a list of contacts whose birthdays fall within a specified number of days from the current date.
-   
-3. **Cloud File Uploading**: Users can upload files to cloud services and access them. The web interface allows users to upload any file to the server.
-   
-4. **Input Validation**: Validates phone numbers and email addresses during record creation or editing, providing feedback to users for incorrect inputs.
-   
-5. **Note Editing and Deletion**: Users can edit and delete notes.
-   
-6. **Note Search**: Enables users to search for specific notes.
-   
-7. **Note Search and Sorting by Keywords (Tags)**: Users can search and sort notes based on keywords or tags.
-   
-8. **Authentication**: Implements user authentication mechanisms, allowing access to registered users only. Each user has access only to their data and files. Password recovery mechanisms via email are also implemented.
+## Features
 
-#### Technical Requirements Met
+### Contacts
 
-- **Web Interface**: Developed using the Django framework.
-  
-- **Repository**: The project is stored in a separate repository and is publicly accessible on GitHub.
-  
-- **Installation and Usage Guide**: Includes detailed instructions for installation and usage.
-  
-- **Database Persistence**: The application stores information in a PostgreSQL database and can be restarted without data loss.
-  
-- **Environment Variables**: Critical database access data and program settings are stored in environment variables and not uploaded to the repository.
+- **Manage Contacts**: Users can add, edit, delete, and search for contacts.
+- **Upcoming Birthdays**: Users can view upcoming birthdays of their contacts within a specified number of days.
 
-#### Additional Tasks Completed
+### Notes
 
-- **HTML/CSS Improvement**: Enhanced the visualization of HTML and CSS components for better user experience.
-- **Multilingual Interface**: The project's interface is implemented in both Ukrainian and English languages.
-- **Live Chat Bot**: Implemented a live chatbot feature for user interaction.
+- **Manage Notes**: Users can add, edit, delete, and search for notes.
+- **Tagging**: Notes can be tagged for better organization.
+- **Top Tags**: Users can see the top tags used across all notes.
 
-#### Contributors
+### Filemanager
 
-- AndriKovalchuk
-- Grosstikc
-- Flairim
-- Delah0ya
-- s-linan
+- **Upload and Manage Files**: Users can upload various types of files (videos, images, documents, audio) and manage
+  them.
+- **Categorization**: Files can be categorized for better organization.
+- **Download Files**: Users can download uploaded files.
 
-#### License
+### News
 
-This project is licensed under the [MIT License](https://github.com/AndriKovalchuk/DJANGO-PERSONAL-ASSISTANT/blob/license/LICENSE.txt).
+- **View News and Statistics**: Users can view news articles and statistics, with the information being updated on a
+  daily basis.
+
+### Users
+
+- **User Registration**: Users can register for an account.
+- **User Authentication**: Registered users can log in to access the application.
+- **User Profiles**: Users have profiles where they can manage their personal information.
+
+### Profiles
+
+- **User Profiles**: Users can view and edit their profiles.
+- **Avatar Upload**: Users can upload avatars for their profiles.
+
+## Installation
+
+1. Clone the repository:
+    ```bash
+    git clone <repository-url>
+    cd <repository-name>
+    ```
+2. Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+3. Set up environment variables:
+    - Create a `.env` file in the project root directory.
+    - Define the following environment variables in the `.env` file:
+        - `CLOUD_NAME`: Your Cloudinary cloud name.
+        - `CLOUD_API_KEY`: Your Cloudinary API key.
+        - `CLOUD_API_SECRET`: Your Cloudinary API secret.
+4. Run migrations:
+    ```bash
+    python manage.py migrate
+    ```
+5. Start the development server:
+    ```bash
+    python manage.py runserver
+    ```
+6. Access the application at [http://localhost:8000/](http://localhost:8000/).
+
+## Usage
+
+1. Register for an account or log in if you already have one.
+2. Navigate through the different sections (Contacts, Notes, Files, Profile) to manage your personal information.
+3. Use the provided forms and functionalities to add, edit, delete, and search for items.
+4. Explore additional features such as upcoming birthdays, top tags, and file categorization.
+5. Switch between languages: Users can switch between Ukrainian and English languages by selecting the desired language option from the language switcher provided in the web application interface.
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/<feature-name>`).
+3. Commit your changes (`git commit -am 'Add new feature'`).
+4. Push to the branch (`git push origin feature/<feature-name>`).
+5. Create a new Pull Request.
+
+## License
+
+This project is licensed under the MIT License.

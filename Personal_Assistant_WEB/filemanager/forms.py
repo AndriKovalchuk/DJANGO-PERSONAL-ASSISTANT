@@ -1,6 +1,9 @@
 from django import forms
 from .models import File, Category
 
+from django import forms
+import os
+
 
 class FileUploadForm(forms.ModelForm):
     file = forms.FileField(widget=forms.ClearableFileInput(attrs={'class': 'form-control mt-1'}))
@@ -10,6 +13,7 @@ class FileUploadForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(FileUploadForm, self).__init__(*args, **kwargs)
         self.fields['category'].queryset = Category.objects.filter(user=user)
+
 
     class Meta:
         model = File
@@ -26,3 +30,18 @@ class CategoryForm(forms.ModelForm):
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
+
+
+class EditFileForm(forms.ModelForm):
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control mt-1', 'placeholder': 'New file name'}))
+    category = forms.ModelChoiceField(queryset=Category.objects.none(),
+                                      widget=forms.Select(attrs={'class': 'form-select mt-1'}),
+                                      required=False)
+
+    def __init__(self, user, *args, **kwargs):
+        super(EditFileForm, self).__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.filter(user=user)
+
+    class Meta:
+        model = File
+        fields = ['name', 'category']

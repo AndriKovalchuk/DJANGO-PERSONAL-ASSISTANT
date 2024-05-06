@@ -12,7 +12,7 @@ class Tag(models.Model):
 
 class Note(models.Model):
     text = models.CharField(null=False)
-    description = models.CharField(max_length=150, null=False)
+    description = models.CharField(null=False)
     created = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)

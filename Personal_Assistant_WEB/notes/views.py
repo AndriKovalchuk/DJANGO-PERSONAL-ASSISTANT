@@ -7,7 +7,6 @@ from django.urls import reverse
 from notes.forms import NoteForm  # noqa
 from notes.models import Tag, Note  # noqa
 
-
 from news.views import news_view  # noqa
 
 from django.contrib.auth.decorators import login_required
@@ -21,10 +20,13 @@ cloudinary.config(cloud_name=env('CLOUD_NAME'), api_key=env('CLOUD_API_KEY'), ap
 def my_notes(request):
     notes = Note.objects.filter(user=request.user).all()  # noqa
     tag = request.GET.get('tag')
+    query = request.GET.get('q')
     if tag:
         notes = notes.filter(tags__name__icontains=tag)
+    if query:
+        notes = notes.filter(Q(text__icontains=query) | Q(tags__name__icontains=query))
     top_tags = Tag.objects.filter(note__user=request.user).annotate(count=Count('note')).order_by('-count')[:10]
-    return render(request, "notes/my_notes.html", context={"notes": notes, "top_tags": top_tags})
+    return render(request, "notes/my_notes.html", context={"notes": notes, "top_tags": top_tags, 'query': query})
 
 
 @login_required
@@ -94,12 +96,3 @@ def delete_note(request, note_id):
                 tag.delete()
         return redirect(reverse("notes:my_notes"))
     return render(request, "notes/delete_note.html", context={"note": note})
-
-
-@login_required
-def search_results_notes(request):
-    notes = Note.objects.filter(user=request.user).all()  # noqa
-    query = request.GET.get('q')
-    if query:
-        notes = notes.filter(Q(text__icontains=query) | Q(tags__name__icontains=query))
-    return render(request, 'notes/search_results_notes.html', {'notes': notes, 'query': query})

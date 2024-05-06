@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -26,10 +27,10 @@
 					<i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
 					<div id="status-options">
 						<ul>
-							<li id="status-online" class="active"><span class="status-circle"></span> <p>Online</p></li>
-							<li id="status-away"><span class="status-circle"></span> <p>Away</p></li>
-							<li id="status-busy"><span class="status-circle"></span> <p>Busy</p></li>
-							<li id="status-offline"><span class="status-circle"></span> <p>Offline</p></li>
+							<li id="status-online" class="active"><span class="status-circle"></span> <p>{% trans "Online" %}</p></li>
+							<li id="status-away"><span class="status-circle"></span> <p>{% trans "Away" %}</p></li>
+							<li id="status-busy"><span class="status-circle"></span> <p>{% trans "Busy" %}</p></li>
+							<li id="status-offline"><span class="status-circle"></span> <p>{% trans "Offline" %}</p></li>
 						</ul>
 					</div>
 					<div id="expanded">
@@ -44,7 +45,7 @@
 			</div>
 			<div id="search">
 				<label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
-				<input type="text" placeholder="Search contacts..." />
+				<input type="text" placeholder="{% trans "Search contacts..." %}" />
 			</div>
 			<div id="contacts">
 				<ul>
@@ -53,8 +54,8 @@
 							<span class="contact-status online"></span>
 							<img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
 							<div class="meta">
-								<p class="name">Louis Litt</p>
-								<p class="preview">You just got LITT up, Mike.</p>
+								<p class="name">{% trans "Louis Litt" %}</p>
+								<p class="preview">{% trans "You just got LITT up, Mike." %}</p>
 							</div>
 						</div>
 					</li>
@@ -63,17 +64,17 @@
 							<span class="contact-status busy"></span>
 							<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
 							<div class="meta">
-								<p class="name">Harvey Specter</p>
-								<p class="preview">Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>
+								<p class="name">{% trans "Harvey Specter" %}</p>
+								<p class="preview">{% trans "Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things." %}</p>
 							</div>
 						</div>
 					</li>
 				</ul>
 			</div>
 			<div id="bottom-bar">
-				<button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
-				<button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
-				<button id="home-button" style="width: 338px;" onclick="redirectToHome()"><i class="fa fa-home fa-fw" aria-hidden="true"></i><span>Home</span>
+				<button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>{% trans "Add contact" %}</span></button>
+				<button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>{% trans "Settings" %}</span></button>
+				<button id="home-button" style="width: 338px;" onclick="redirectToHome()"><i class="fa fa-home fa-fw" aria-hidden="true"></i><span>{% trans "Home" %}</span>
 					</button>
 			</div>
 		</div>
@@ -101,7 +102,7 @@
 			</div>
 			<div class="message-input">
 				<div class="wrap">
-				<input id="chat-message-input" type="text" placeholder="Write your message..." />
+				<input id="chat-message-input" type="text" placeholder="{% trans "Write your message..." %}" />
 				<i class="fa fa-paperclip attachment" aria-hidden="true"></i>
 				<button id="chat-message-submit" class="submit">
 					<i class="fa fa-paper-plane" aria-hidden="true"></i>

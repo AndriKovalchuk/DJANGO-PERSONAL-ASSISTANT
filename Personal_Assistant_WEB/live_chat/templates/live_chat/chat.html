@@ -5,26 +5,34 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
+    <title>{% trans "Chat Rooms" %}</title>
 </head>
 <body>
-<div class="container mt-3 ">
+<div class="container mt-3">
     <p class="fs-2 fw-bold">{% trans "What chat room would you like to enter?" %}</p>
-    <input id="room-name-input" type="text" size="100"><br>
-    <input id="room-name-submit" class="btn btn-primary" value="Enter" style="margin-top: 10px;">
+    <input id="room-name-input" type="text" size="100" placeholder="{% trans "Enter the room name" %}" ><br>
+    <input id="room-name-submit" class="btn btn-primary" value="{% trans "Enter" %}" style="margin-top: 10px;">
 
     <script>
         document.querySelector('#room-name-input').focus();
         document.querySelector('#room-name-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#room-name-submit').click();
+            if (e.keyCode === 13) {  // Enter key pressed
+                validateAndSubmit();
             }
         };
 
         document.querySelector('#room-name-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/chat/' + roomName + '/';
+            validateAndSubmit();
         };
+
+        function validateAndSubmit() {
+            var roomName = document.querySelector('#room-name-input').value.trim(); // Remove leading/trailing whitespaces
+            if (roomName !== "") {  // Check if roomName is not blank
+                window.location.pathname = '/chat/' + roomName + '/';
+            } else {
+                alert("{% trans "Room name cannot be blank." %}"); // Show an alert if room name is blank
+            }
+        }
     </script>
 </div>
 </body>

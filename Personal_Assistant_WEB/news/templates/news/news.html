@@ -1,5 +1,6 @@
 {% extends 'Personal_Assistant_WEB/base.html' %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}{{ page_title }}{% endblock %}
 
@@ -10,29 +11,29 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-3">
-        <!-- First Exchange Rate Card -->
+    <div class="col-4">
+        <!-- Exchange Rate Card -->
         <div class="card mb-3">
             <div class="card-header">
-                <h2 class="h5 card-title m-0">{% trans 'Exchange Rates:' %}</h2>
+                <h2 class="h5 card-title m-0">{% trans 'Exchange Rates' %}</h2>
             </div>
-            <div class="card-body">
-                <p class="mb-0">{% trans 'Date:' %} {{ data.Date }}</p>
-                <p>{% trans 'Bank:' %} {{ data.Bank }}</p>
-                <table class="table">
+            <div class="card-body ">
+                <p class="mb-2">{% trans 'Date:' %} {{ data.Date }}</p>
+                <img src="{% static 'images/bank.png' %}" style="width: 280px; height: 60px" alt="{% trans 'Bank Logo' %}">
+                <table class="table table-striped align-text-center">
                     <thead>
                     <tr>
                         <th>{% trans 'Currency:' %}</th>
-                        <th>{% trans 'Sale:' %}</th>
-                        <th>{% trans 'Purchase:' %}</th>
+                        <th class="text-center">{% trans 'Sale:' %}</th>
+                        <th class="text-center">{% trans 'Purchase:' %}</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for rate in data.Exchange_rate %}
                     <tr>
                         <td>{{ rate.currency }}</td>
-                        <td>{{ rate.sale }}</td>
-                        <td>{{ rate.purchase }}</td>
+                        <td class="text-center">{{ rate.sale }}</td>
+                        <td class="text-center">{{ rate.purchase }}</td>
                     </tr>
                     {% endfor %}
                     </tbody>
@@ -42,102 +43,116 @@
         <!-- WEATHER -->
         <div class="card mb-3">
             <div class="card-header">
-                <h2 class="h5 card-title m-0">{% trans 'Time and Weather:' %}</h2>
+                <h2 class="h5 card-title m-0">{% trans 'Time and Weather' %}</h2>
             </div>
             <div class="card-body">
-                <p id="current-date-time" class="mb-0"><span id="current-date">{{ data.Date }}</span> <span id="current-time"></span></p>
+                <p id="current-date-time" class="mb-0"><span id="current-date">{{ data.Date }}</span> <span
+                        id="current-time"></span></p>
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for weather_info in data.Weather %}
-                        <tr>
-                            <td class="align-middle" style="text-align: left; border: none;">{% trans weather_info.City %}, {% trans weather_info.Country %}</td>
-                            <td style="border: none;"></td>
-                            <td style="border: none;"></td>
-                            <td class="align-middle" style="text-align: left; border: none; padding-left: 0px;">{% trans weather_info.Condition_text %}</td>
-                        </tr>
-                        {% endfor %}
+                    {% for weather_info in data.Weather %}
+                    <tr>
+                        <td class="align-middle" style="text-align: left; border: none;">{% trans weather_info.City %},
+                            {% trans weather_info.Country %}
+                        </td>
+                        <td style="border: none;"></td>
+                        <td style="border: none;"></td>
+                        <td class="align-middle" style="text-align: center; border: none;">{% trans weather_info.Condition_text %}
+                        </td>
+                    </tr>
+                    {% endfor %}
                     </tbody>
                     <tbody>
-                        {% for weather_info in data.Weather %}
-                        <tr>
-                            <td class="align-middle" style="text-align: left;">{{ weather_info.Temperature }}°C</td>
-                            <td></td>
-                            <td></td>
-                            <td class="align-middle" style="text-align: left; padding-left: 0px;"><img src="{{ weather_info.Condition_icon }}" alt="{% trans 'Weather Icon' %}"></td>
-                        </tr>
-                        {% endfor %}
+                    {% for weather_info in data.Weather %}
+                    <tr>
+                        <td class="align-middle" style="text-align: left;">{{ weather_info.Temperature }}°C</td>
+                        <td></td>
+                        <td></td>
+                        <td class="align-middle" style="text-align: center;"><img
+                                src="{{ weather_info.Condition_icon }}" alt="{% trans 'Weather Icon' %}"></td>
+                    </tr>
+                    {% endfor %}
                     </tbody>
                     <thead>
-                        <tr>
-                            <td style="text-align: center; padding-right: 0px; padding-left: 0px">{% trans 'Wind' %}</td>
-                            <td style="text-align: center; padding-right: 0px; padding-left: 0px">{% trans 'Humid' %}</td>
-                            <td style="text-align: center; padding-right: 0px; padding-left: 0px">{% trans 'Pressure' %}</td>
-                            <td style="text-align: center; padding-right: 0px; padding-left: 0px">{% trans 'UV' %}</td>
-                        </tr>
+                    <tr>
+                        <td class="align-middle" style="text-align: center;">{% trans 'Wind' %}</td>
+                        <td class="align-middle" style="text-align: center;">{% trans 'Humidity' %}</td>
+                        <td class="align-middle" style="text-align: center;">{% trans 'Pressure' %}</td>
+                        <td class="align-middle" style="text-align: center;">{% trans 'UV index' %}</td>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for weather_info in data.Weather %}
-                        <tr>
-                            <td class="align-middle" style="text-align: center;">{{ weather_info.Wind_speed }} km/h</td>
-                            <td class="align-middle" style="text-align: center;">{{ weather_info.Humidity }}%</td>
-                            <td class="align-middle" style="text-align: center;">{{ weather_info.Pressure }} mb</td>
-                            <td class="align-middle" style="text-align: center;">{{ weather_info.UV }}</td>
-                        </tr>
-                        {% endfor %}
+                    {% for weather_info in data.Weather %}
+                    <tr>
+                        <td class="align-middle" style="text-align: center;">{{ weather_info.Wind_speed }} km/h</td>
+                        <td class="align-middle" style="text-align: center;">{{ weather_info.Humidity }}%</td>
+                        <td class="align-middle" style="text-align: center;">{{ weather_info.Pressure }} mb</td>
+                        <td class="align-middle" style="text-align: center;">{{ weather_info.UV }}</td>
+                    </tr>
+                    {% endfor %}
                     </tbody>
-                    <tbody>
+                    <table class="table table-striped align-text-center">
+
                         {% for forecast_info in data.Weather_Forecast %}
                         <tr>
-                            <td class="align-middle" style="text-align: left;">{% trans forecast_info.Day_of_Week %}</td>
-                            <td class="align-middle" style="text-align: left;">{{ forecast_info.Max_Temperature }}°C</td>
-                            <td class="align-middle" style="text-align: left; padding-left: 10px;">{{ forecast_info.Min_Temperature }}°C</td>
-                            <td class="align-middle" style="text-align: left; padding-left: 10px;"><img src="{{ forecast_info.Condition_icon }}" alt="{% trans 'Weather Icon' %}"></td>
+                            <td class="align-middle" style="text-align: left;">{% trans forecast_info.Day_of_Week %}
+                            </td>
+                            <td class="align-middle" style="text-align: center;">{{ forecast_info.Max_Temperature }}°C
+                            </td>
+                            <td class="align-middle" style="text-align: center;">{{ forecast_info.Min_Temperature }}°C
+                            </td>
+                            <td class="align-middle" style="text-align: center;"><img
+                                    src="{{ forecast_info.Condition_icon }}" alt="{% trans 'Weather Icon' %}"></td>
                         </tr>
                         {% endfor %}
+                    </table>
+                </table>
+            </div>
+        </div>
+        <!-- WAR DAY -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h2 class="h5 card-title m-0 ">{% trans 'War Day:' %} {{ data.War_day }}</h2>
+            </div>
+            <div class="card-body table-striped">
+                <h3 class="card-title h5">{% trans 'Occupants Loses:' %}</h3>
+                <table class="table table-striped">
+                    <tbody>
+                    {% for key, value in data.Occupants_loses.items %}
+                    <tr>
+                        <td class="align-middle" style="font-size: 14px;">{% trans key|title %}</td>
+                        <td class="text-end" style="min-width: 20%;">{{ value }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <!-- Increase by Day -->
+                <h3 class="card-title h5 mt-4">{% trans 'Increase by Day:' %}</h3>
+                <table class="table table-striped">
+                    <tbody>
+                    {% for key, value in data.Increase_by_day.items %}
+                    <tr>
+                        <td class="align-middle" style="font-size: 14px;">{{ key|title }}</td>
+                        <td class="text-end" style="min-width: 20%;">{{ value }}</td>
+                    </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-
-        <div class="card mb-3">
-            <div class="card-header">
-                <h2 class="h5 card-title m-0">{% trans 'War Day:' %} {{ data.War_day }}</h2>
-            </div>
-            <div class="card-body">
-                <h3 class="card-title h6">{% trans 'Occupants Loses:' %}</h3>
-                <ul class="list-group list-group-flush">
-                    {% for key, value in data.Occupants_loses.items %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center ps-0 pe-0">
-                        {{ key|title }}:
-                        <span class="text-end" style="flex-shrink:0; min-width:20%;">{{ value }}</span>
-                    </li>
-                    {% endfor %}
-                </ul>
-
-                <h3 class="card-title h6 mt-4">{% trans 'Increase by Day:' %}</h3>
-                <ul class="list-group list-group-flush">
-                    {% for key, value in data.Increase_by_day.items %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center ps-0 pe-0">
-                        {{ key|title }}:
-                        <span class="text-end" style="flex-shrink:0; min-width:20%;">{{ value }}</span>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
     </div>
-
-    <div class="col-md-9">
+    <!-- NEWS -->
+    <div class="col-8 ">
         {% for news in data.News %}
-        <div class="card mb-4">
+        <div class="card mb-3">
             <div class="card-header">
                 <h3 class="card-title h4 mb-0">
                     <a target="_blank" class="text-dark text-decoration-none" href="{{ news.link_to_source }}">{{ news.title }}</a>

@@ -20,7 +20,7 @@ NEWS_DAYS = 2
 NEWS_DATE = CURRENT_DATE - timedelta(days=NEWS_DAYS)
 CURRENT_DATE_STR_NEWS = NEWS_DATE.strftime("%Y-%m-%d")
 
-NEWS_TO_SHOW = 9
+NEWS_TO_SHOW = 10
 
 NEWSAPI_URL = f"https://newsapi.org/v2/top-headlines?country=ua&apiKey={NEWSAPI_API_KEY}"
 

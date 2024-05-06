@@ -25,7 +25,12 @@ cloudinary.config(cloud_name=env('CLOUD_NAME'), api_key=env('CLOUD_API_KEY'), ap
 @login_required
 def my_contacts(request):
     contacts = Contact.objects.filter(user=request.user).all() if request.user.is_authenticated else []  # noqa
-    return render(request, "contacts/my_contacts.html", context={"contacts": contacts})
+    query = request.GET.get('q')
+    if query:
+        contacts = contacts.filter(
+            Q(fullname__icontains=query) | Q(email__icontains=query) | Q(phone__icontains=query) | Q(address__icontains=query)
+        )
+    return render(request, 'contacts/my_contacts.html', {"contacts": contacts, "query": query})
 
 
 @login_required
@@ -67,32 +72,29 @@ def delete_contact(request, contact_id):
 @login_required
 def upcoming_birthdays(request):
     current_date = date.today()
-    to_date = current_date + timedelta(days=7)
+    days = request.GET.get('days', 30)
+    try:
+        days = int(days)
+    except ValueError:
+        days = 30
     upcoming = []
-    contacts = Contact.objects.filter(user=request.user).all()  # noqa
+    contacts = Contact.objects.filter(user=request.user).all()
 
     for contact in contacts:
+        next_birthday = contact.birthday.replace(year=current_date.year)
+        if next_birthday < current_date:
+            next_birthday = next_birthday.replace(year=current_date.year + 1)
 
-        contact_birthday_month_day = (contact.birthday.month, contact.birthday.day)
-        current_date_month_day = (current_date.month, current_date.day)
-        to_date_month_day = (to_date.month, to_date.day)
+        to_date = current_date + timedelta(days=days)
 
-        if current_date_month_day < contact_birthday_month_day <= to_date_month_day:
-            turning_age = current_date.year - contact.birthday.year
-            days_left_till_birthday = contact_birthday_month_day[1] - current_date_month_day[1]
+        if current_date < next_birthday <= to_date:
+            if next_birthday.year == current_date.year:
+                turning_age = current_date.year - contact.birthday.year
+            else:
+                turning_age = current_date.year - contact.birthday.year + 1
+            days_left_till_birthday = (next_birthday - current_date).days
             upcoming.append((contact, turning_age, days_left_till_birthday))
 
     upcoming = sorted(upcoming, key=lambda x: x[2])
 
-    return render(request, "contacts/upcoming_birthdays.html", context={"upcoming": upcoming})
-
-
-@login_required
-def search_results_contacts(request):
-    contacts = Contact.objects.filter(user=request.user).all()  # noqa
-    query = request.GET.get('q')
-    if query:
-        contacts = contacts.filter(Q(fullname__icontains=query) | Q(email__icontains=query) | Q(phone__icontains=query))
-        for el in contacts:
-            print(el.fullname)
-    return render(request, 'contacts/search_contacts.html', {"contacts": contacts, "query": query})
+    return render(request, "contacts/upcoming_birthdays.html", context={"upcoming": upcoming, "days": days})

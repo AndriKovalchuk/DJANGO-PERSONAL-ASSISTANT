@@ -1,39 +1,42 @@
 {% extends 'Personal_Assistant_WEB/base.html' %}
+{% load static %}
+{% load i18n %}
+
 {% block content %}
 <div class="row mb-3">
     <div class="col mt-3">
-        <h1 class="fs-1 fw-bold">{{ page_title }}</h1>
+        <h1 class="fs-1 fw-bold">{% trans page_title %}</h1>
     </div>
     <div class="col text-end mt-3">
-        <a href="{% url 'filemanager:add_file' %}" class="btn btn-primary">Add file</a>
-        <a href="{% url 'filemanager:create_category' %}" class="btn btn-primary">Add Category</a>
+        <a href="{% url 'filemanager:add_file' %}" class="btn btn-primary">{% trans "Add file" %}</a>
+        <a href="{% url 'filemanager:create_category' %}" class="btn btn-primary">{% trans "Add Category" %}</a>
     </div>
 </div>
 <div class="row">
     <div class="col-md-3">
         <div class="card mb-4">
             <div class="card-header">
-                <h2 class="h4 m-0">Search File</h2>
+                <h2 class="h4 m-0">{% trans "Search File" %}</h2>
             </div>
             <div class="card-body">
                 <form action="{% url 'filemanager:my_files' %}" method="get">
                     <div class="d-flex gap-2">
-                        <input type="search" class="form-control" id="search" name="search" placeholder="File name">
-                        <button class="btn btn-sm btn-primary" type="submit">Search</button>
+                        <input type="search" class="form-control" id="search" name="search" placeholder="{% trans "File name" %}">
+                        <button class="btn btn-sm btn-primary" type="submit">{% trans "Search" %}</button>
                     </div>
                 </form>
             </div>
         </div>
         <div class="card">
             <div class="card-header">
-                <h2 class="h4 m-0">Categories</h2>
+                <h2 class="h4 m-0">{% trans "Categories" %}</h2>
             </div>
             <div class="card-body">
                 <div class="list-group">
                     <a href="{% url 'filemanager:my_files' %}"
                        class="list-group-item list-group-item-action {% if request.resolver_match.url_name != 'files_by_categories' %}active{% endif %}"
                        aria-current="true">
-                        All files
+                        {% trans "All files" %}
                     </a>
                     {% for category in categories %}
                     <a href="{% url 'filemanager:files_by_categories' category.id %}"
@@ -44,7 +47,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a class="btn btn-link p-0" href="{% url 'filemanager:manage_categories' %}">Manage Categories</a>
+                <a class="btn btn-link p-0" href="{% url 'filemanager:manage_categories' %}">{% trans "Manage Categories" %}</a>
             </div>
         </div>
     </div>
@@ -55,28 +58,32 @@
                 <table class="table m-0">
                     <thead>
                     <tr>
-                        <th scope="col">File name</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">{% trans "File name" %}</th>
+                        <th scope="col" class="text-end">{% trans "Actions" %}</th>
                     </tr>
                     </thead>
                     <tbody>
-                        {% for file in files %}
-                        <tr>
-                            <td><a href="{% url 'filemanager:download_file' file.id %}" download="{{ file.name }}">{{ file.name }}</a></td>
-                            <td>{{ file.category }}</td>
-                            <td>
-                                <div class="d-inline-flex gap-2">
-                                    <a href="{% url 'filemanager:edit_file' file.id %}" class="btn btn-sm btn-primary">Edit</a>
-                                    <a href="{% url 'filemanager:delete_file' file.id %}" class="btn btn-sm btn-danger">Delete</a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
+                    {% for file in files %}
+                    <tr>
+                        <td class="align-middle">
+                            <a href="{{ file.url }}" target="_blank">{{ file.name }}</a>
+                            <a href="{% url 'filemanager:download_file' file.id %}" download="{{ file.name }}">
+                                <img src="{% static 'images/download.svg' %}"
+                                     style="height: 20px; width: 20px; margin-left: 10px;" alt="{% trans "Download Icon" %}">
+                            </a>
+                        </td>
+                        <td class="align-middle">
+                            <div class="d-flex justify-content-end">
+                                <a href="{% url 'filemanager:edit_file' file.id %}" class="btn btn-sm btn-primary me-2">{% trans "Edit" %}</a>
+                                <a href="{% url 'filemanager:delete_file' file.id %}" class="btn btn-sm btn-danger">{% trans "Delete" %}</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
                 {% else %}
-                <p class="h5 m-0">You don't have any files. Please download a file to start organizing your documents.</p>
+                <p class="h5 m-0">{% trans "You don't have any files. Please download a file to start organizing your documents." %}</p>
                 {% endif %}
             </div>
             {% if files.paginator.num_pages > 1 %}
@@ -84,7 +91,8 @@
                 <nav aria-label="Page navigation example">
                     <ul class="pagination m-0">
                         {% if files.has_previous %}
-                        <li class="page-item"><a class="page-link" href="?page={{ files.previous_page_number }}">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ files.previous_page_number }}">{% trans "Previous" %}</a>
+                        </li>
                         {% endif %}
                         {% for number in page_range %}
                         {% if number != files.number %}
@@ -94,7 +102,7 @@
                         {% endif %}
                         {% endfor %}
                         {% if files.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page={{ files.next_page_number }}">Next</a>
+                        <li class="page-item"><a class="page-link" href="?page={{ files.next_page_number }}">{% trans "Next" %}</a>
                         </li>
                         {% endif %}
                     </ul>

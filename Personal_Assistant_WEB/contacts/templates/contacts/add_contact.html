@@ -8,10 +8,10 @@
         <div class="col-xl-8">
             <!-- Account details card-->
             <div class="card mb-4 bg-light">
-                <div class="card-header">Contact Details</div>
+                <div class="card-header">{% trans "Contact Details" %}</div>
                 {% if form.errors and form.non_field_errors %}
                 <div class="alert alert-danger" role="alert">
-                    {{ form.non_field_errors }}
+                    {{ form.non_field_errors|safe }}
                 </div>
                 {% endif %}
                 <div class="card-body">
@@ -19,31 +19,31 @@
                         {% csrf_token %}
                         <!-- Form Group (fullname)-->
                         <div class="mb-3">
-                            <label class="small mb-1" for="inputContactFullname">Full Name</label>
+                            <label class="small mb-1" for="inputContactFullname">{% trans "Full Name" %}</label>
                             <input class="form-control" id="inputContactFullname" name="fullname" type="text"
-                                   placeholder="Enter the full name" value="{{ contact.fullname }}">
+                                   placeholder="{% trans " Enter the full name" %}" value="{{ contact.fullname }}">
                             {% if form.fullname.errors %}
-                            <p class="text-danger">{{ form.fullname.errors }}</p>
+                            <p class="text-danger">{{ form.fullname.errors|safe }}</p>
                             {% endif %}
                         </div>
                         <!-- Form Row-->
                         <div class="row gx-3 mb-3">
                             <!-- Form Group (phone)-->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputContactPhone">Phone</label>
+                                <label class="small mb-1" for="inputContactPhone">{% trans "Phone" %}</label>
                                 <input class="form-control" id="inputContactPhone" name="phone" type="tel"
-                                       placeholder="Enter the phone number" value="{{ contact.phone }}">
+                                       placeholder="{% trans " Enter the phone number" %}" value="{{ contact.phone }}">
                                 {% if form.phone.errors %}
-                                <p class="text-danger">{{ form.phone.errors }}</p>
+                                <p class="text-danger">{{ form.phone.errors|safe }}</p>
                                 {% endif %}
                             </div>
                             <!-- Form Group (email)-->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputContactEmail">Email</label>
+                                <label class="small mb-1" for="inputContactEmail">{% trans "Email" %}</label>
                                 <input class="form-control" id="inputContactEmail" name="email" type="email"
-                                       placeholder="Enter the email address" value="{{ contact.email }}">
+                                       placeholder="{% trans " Enter the email address" %}" value="{{ contact.email }}">
                                 {% if form.email.errors %}
-                                <p class="text-danger">{{ form.email.errors }}</p>
+                                <p class="text-danger">{{ form.email.errors|safe }}</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -51,29 +51,30 @@
                         <div class="row gx-3 mb-3">
                             <!-- Form Group (address)-->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputContactAddress">Address</label>
+                                <label class="small mb-1" for="inputContactAddress">{% trans "Address" %}</label>
                                 <input class="form-control" id="inputContactAddress" name="address" type="text"
-                                       placeholder="Enter the address" value="{{ contact.address }}">
+                                       placeholder="{% trans " Enter the address" %}" value="{{ contact.address }}">
                                 {% if form.address.errors %}
-                                <p class="text-danger">{{ form.address.errors }}</p>
+                                <p class="text-danger">{{ form.address.errors|safe }}</p>
                                 {% endif %}
                             </div>
                             <!-- Form Group (birthday)-->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputContactBirthday">Birthday</label>
+                                <label class="small mb-1" for="inputContactBirthday">{% trans "Birthday" %}</label>
                                 <input class="form-control" id="inputContactBirthday" name="birthday" type="date"
-                                       placeholder="Enter your birthday" value="{{ contact.birthday|date:'Y-m-d' }}">
+                                       placeholder="{% trans " Enter your birthday" %}" value="{{
+                                contact.birthday|date:'Y-m-d' }}">
                                 {% if form.birthday.errors %}
-                                <p class="text-danger">{{ form.birthday.errors }}</p>
+                                <p class="text-danger">{{ form.birthday.errors|safe }}</p>
                                 {% endif %}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <button class="btn btn-primary ms-1" type="submit">Save changes</button>
+                                <button class="btn btn-primary ms-1" type="submit">{% trans "Save changes" %}</button>
                             </div>
                             <div class="col text-end">
-                                <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">Back to Contacts</a>
+                                <a href="{% url 'contacts:my_contacts' %}" class="btn btn-secondary">{% trans "Back to Contacts" %}</a>
                             </div>
                         </div>
                     </form>

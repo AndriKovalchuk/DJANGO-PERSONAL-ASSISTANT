@@ -1,6 +1,25 @@
 {% extends "Personal_Assistant_WEB/base.html" %}
 {% load i18n %}
 {% block content %}
+<style>
+    .card {
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .desc {
+        height: 30px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
 <div class="container mt-3">
     {% if query %}
     {% if not notes %}
@@ -41,12 +60,14 @@
                     {{ forloop.counter }}. {{ note.text }}
                 </div>
                 <div class="card-body bg-light">
-                    <p class="card-text">{% trans 'Description' %}: {{ note.description }}</p>
+                    <p class="card-text desc">{% trans 'Description' %}: {{ note.description }}</p>
                     <p class="card-text">{% trans 'Tags' %}:
                         {% for tag in note.tags.all %}
-                        #{{ tag.name }}{% if not forloop.last %}, {% endif %}
+                        <a href="?tag={{ tag.name }}">#{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </p>
+                </div>
+                <div class="card-footer">
                     <a href="{% url 'notes:edit_note' note.id %}" class="btn btn-primary">{% trans 'Edit' %} </a>
                     <a href="{% url 'notes:delete_note' note.id %}" class="btn btn-danger">{% trans 'Delete' %}</a>
                     <!-- Кнопка для відкриття модального вікна для цієї нотатки -->
@@ -59,7 +80,7 @@
             <!-- Модальне вікно для відображення всієї нотатки -->
             <div class="modal fade" id="noteModal{{ note.id }}" tabindex="-1"
                  aria-labelledby="noteModalLabel{{ note.id }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="noteModalLabel{{ note.id }}">{{ note.text }}</h5>
@@ -69,7 +90,7 @@
                             <p>{% trans 'Description' %}: {{ note.description }}</p>
                             <p>{% trans 'Tags' %}:
                                 {% for tag in note.tags.all %}
-                                <a href="?tag={{ tag.name }}"># {{ tag.name }}</a>
+                                <a href="?tag={{ tag.name }}">#{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                                 {% endfor %}
                             </p>
                         </div>

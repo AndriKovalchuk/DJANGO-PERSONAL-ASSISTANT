@@ -4,20 +4,21 @@
 
 {% block content %}
 <div class="row mb-3">
-    <div class="col">
-        <h1 class="card-title h3">{% trans page_title %}</h1>
+    <div class="col mt-3">
+        <h1 class="fs-1 fw-bold">{% trans page_title %}</h1>
     </div>
-    <div class="col text-end">
-        <a href="{% url 'filemanager:my_files' %}" class="btn btn-outline-primary">{% trans "Back to File List" %}</a>
-        <a href="{% url 'filemanager:manage_categories' %}" class="btn btn-outline-secondary">{% trans "Back to Category List" %}</a>
+    <div class="col text-end mt-3">
+        <a href="{% url 'filemanager:my_files' %}" class="btn btn-primary">{% trans "Back to File List" %}</a>
+        <a href="{% url 'filemanager:manage_categories' %}" class="btn btn-secondary">{% trans "Back to Category List" %}</a>
     </div>
 </div>
 <div class="row">
     <div class="col-md-6">
         <div class="card">
             <form action="{% if category %}{% url 'filemanager:edit_category' category.id %}{% else %}{% url 'filemanager:create_category' %}{% endif %}" method="post">
+                {% csrf_token %}
                 <div class="card-body">
-                    {% csrf_token %}
+
                     {{ form.as_p }}
                 </div>
                 <div class="card-footer">

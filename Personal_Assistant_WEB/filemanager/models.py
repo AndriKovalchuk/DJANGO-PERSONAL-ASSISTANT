@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.utils import timezone
 
 
@@ -12,7 +12,7 @@ class Category(models.Model):
 
 
 class File(models.Model):
-    name = models.CharField(max_length=255, blank=True)  # Дозволяє ім'ям файлу бути порожнім
+    name = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     url = models.URLField()

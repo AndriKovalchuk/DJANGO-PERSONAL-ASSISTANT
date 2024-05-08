@@ -5,6 +5,18 @@ body {
     background-attachment: fixed;
 }
 
+#BackgroundVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1; /* Ensure the video stays behind other content */
+}
+
+
 .alert-error, .errorlist {
     color: crimson;
 }
@@ -18,24 +30,30 @@ body {
     font-size: 20px;
 }
 
+.html, body {
+    height: 100%;
+    margin: 0;
+}
 
-.footer-text {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            padding: 10px;
-            font-size: 12px;
-            color: #666;
-        }
+.container-fluid {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-.footer-text-custom {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            padding: 10px;
-            font-size: 12px;
-            color: #666;
-        }
+main {
+    flex: 1;
+}
+
+.footer-image-by {
+font-size: 12px;
+margin-right: 10px;
+}
+
+.footer-copyright {
+font-size: 12px;
+margin-left: 10px;
+}
 
 nav .search-block {
     margin-top: 10px;

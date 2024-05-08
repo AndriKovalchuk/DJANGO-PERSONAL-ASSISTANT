@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-import environ
-from pathlib import Path
 import os
+from pathlib import Path
+
+import environ
 from django.utils.translation import gettext_lazy as _
 
 LANGUAGES = [
@@ -22,9 +23,10 @@ LANGUAGES = [
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print(BASE_DIR)
 
 env = environ.Env()
-environ.Env.read_env(BASE_DIR / '.env')
+environ.Env.read_env(BASE_DIR.parent / '.env')
 
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
@@ -42,7 +44,12 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.50.177', '127.0.0.1', 'localhost']
+# CSRF Origin whitelist
+CORS_ALLOWED_ORIGINS = ['https://personal-assistant-web.fly.dev']
+
+CSRF_TRUSTED_ORIGINS = ['https://personal-assistant-web.fly.dev']
+
+ALLOWED_HOSTS = ['192.168.50.177', '127.0.0.1', 'localhost', 'personal-assistant-web.fly.dev']
 
 # Application definition
 
@@ -165,12 +172,17 @@ LOGIN_REDIRECT_URL = "/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+REDIS_HOST = env('REDIS_HOST')
+REDIS_PORT = env('REDIS_PORT')
+REDIS_PASSWORD = env('REDIS_PASSWORD')
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": REDIS_PASSWORD,
         }
     }
 }

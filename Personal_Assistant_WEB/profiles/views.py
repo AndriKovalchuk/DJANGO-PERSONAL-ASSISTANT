@@ -1,14 +1,15 @@
 import os
+
 import cloudinary
 import cloudinary.uploader
-
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
-
-from .forms import ProfileForm, AvatarUploadForm
-from .models import Profile
+from django.shortcuts import get_object_or_404, redirect, render
 from users.forms import UserEditForm  # noqa
+
 from Personal_Assistant_WEB.settings import env  # noqa
+
+from .forms import AvatarUploadForm, ProfileForm
+from .models import Profile
 
 cloudinary.config(cloud_name=env('CLOUD_NAME'), api_key=env('CLOUD_API_KEY'), api_secret=env('CLOUD_API_SECRET'))
 
@@ -52,17 +53,14 @@ def upload_avatar(request, profile_name):
             avatar_to_upload = request.FILES['file']
             avatar_extension = os.path.splitext(avatar_to_upload.name)[1].lower()
 
-            # Handling file uploads based on their extensions
             if avatar_extension in ['.png', '.jpg', '.jpeg']:
-                # Upload to Cloudinary
                 uploaded_image = cloudinary.uploader.upload(
-                    avatar_to_upload,  # Corrected the file object
+                    avatar_to_upload,
                     resource_type="image",
                     folder="uploads/images/avatars/"
                 )
                 image_url = uploaded_image['secure_url']
 
-                # Creating a new file object in the Django model with the Cloudinary URL
                 profile.avatar = avatar_to_upload
                 profile.save()
 

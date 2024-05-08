@@ -1,15 +1,10 @@
 import cloudinary.uploader
-from django.db.models import Count, Q
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-
-from notes.forms import NoteForm  # noqa
-from notes.models import Tag, Note  # noqa
-
-from news.views import news_view  # noqa
-
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from notes.forms import NoteForm  # noqa
+from notes.models import Note, Tag  # noqa
 
 from Personal_Assistant_WEB.settings import env  # noqa
 
@@ -26,7 +21,7 @@ def my_notes(request):
     if query:
         notes = notes.filter(Q(text__icontains=query) | Q(tags__name__icontains=query))
     top_tags = Tag.objects.filter(note__user=request.user).annotate(count=Count('note')).order_by('-count')[:10]
-    return render(request, "notes/my_notes.html", context={"notes": notes, "top_tags": top_tags, 'query': query})
+    return render(request, "notes/my_notes.html", context={"notes": notes, "top_tags": top_tags, 'query': query, "tag": tag})
 
 
 @login_required

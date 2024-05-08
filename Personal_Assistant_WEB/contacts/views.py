@@ -1,23 +1,15 @@
-import cloudinary.uploader
-
-from django.db.models import Q
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-
-from .forms import ContactForm
-from notes.forms import NoteForm  # noqa
-from notes.models import Tag, Note  # noqa
-
-from .models import Contact
-
 from datetime import date, timedelta
 
-from news.views import news_view  # noqa
-
+import cloudinary.uploader
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 
 from Personal_Assistant_WEB.settings import env  # noqa
+
+from .forms import ContactForm
+from .models import Contact
 
 cloudinary.config(cloud_name=env('CLOUD_NAME'), api_key=env('CLOUD_API_KEY'), api_secret=env('CLOUD_API_SECRET'))
 
@@ -28,7 +20,8 @@ def my_contacts(request):
     query = request.GET.get('q')
     if query:
         contacts = contacts.filter(
-            Q(fullname__icontains=query) | Q(email__icontains=query) | Q(phone__icontains=query) | Q(address__icontains=query)
+            Q(fullname__icontains=query) | Q(email__icontains=query) | Q(phone__icontains=query) | Q(
+                address__icontains=query)
         )
     return render(request, 'contacts/my_contacts.html', {"contacts": contacts, "query": query})
 
@@ -78,7 +71,7 @@ def upcoming_birthdays(request):
     except ValueError:
         days = 30
     upcoming = []
-    contacts = Contact.objects.filter(user=request.user).all()
+    contacts = Contact.objects.filter(user=request.user).all()  # noqa
 
     for contact in contacts:
         next_birthday = contact.birthday.replace(year=current_date.year)

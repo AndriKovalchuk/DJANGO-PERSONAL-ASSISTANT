@@ -54,8 +54,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" value="" name="iAgree" id="iAgree" required>
                                         <label class="form-check-label text-secondary" for="iAgree">
-                                            {% trans 'I agree to the' %} <a href="#" class="link-primary text-decoration-none">{% trans 'terms and conditions' %}
-                                            </a>
+                                            {% trans 'I agree to the' %} <a href="#" class="link-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#termsModal">{% trans 'terms and conditions' %}</a>
                                         </label>
                                     </div>
                                 </div>
@@ -81,5 +80,72 @@
         </div>
     </div>
 </section>
+
+<!-- Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel"><b>{% trans 'Terms and Conditions' %}</b></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <b>1.</b> Introduction<br>
+                <b>1.1.</b> Welcome to “Personal Assistant”! These Terms and Conditions govern your use of our website,
+                including all associated web pages (collectively referred to as the "Website"). By accessing or using
+                the Website, you agree to comply with and be bound by these Terms and Conditions.<br>
+                <br>
+                <b>2.</b> Use of the Website<br>
+                <b>2.1.</b> You must be at least 12 years old to use the Website. By using the Website, you represent
+                and warrant that you are at least 12 years of age.<br>
+                <b>2.2.</b> You agree to provide accurate and complete information when using the Website and to update
+                such information as necessary to keep it accurate and complete.<br>
+                <b>2.3.</b> You are responsible for maintaining the confidentiality of any login information associated
+                with your account and for restricting access to your computer or mobile device. You agree to accept
+                responsibility for all activities that occur under your account.<br>
+                <br>
+                <b>3.</b> Intellectual Property<br>
+                <b>3.1.</b> The content, features, and functionality of the Website, including but not limited to text,
+                graphics, logos, images, audio clips, and software, are the property of “Project Group 9” or its
+                licensors and are protected by copyright, trademark, and other intellectual property laws.<br>
+                <b>3.2.</b> You may not modify, reproduce, distribute, create derivative works, publicly display, or
+                otherwise use any content from the Website without the prior written consent of “Project Group 9”.<br>
+                <br>
+                <b>4.</b> User Content<br>
+                <b>4.1.</b> You retain ownership of any content you submit, post, or display on or through the Website
+                ("User Content").<br>
+                <b>4.2.</b> By submitting User Content, you grant [Your Company Name] a non-exclusive, royalty-free,
+                perpetual, irrevocable, and fully sublicensable right to use, reproduce, modify, adapt, publish,
+                translate, create derivative works from, distribute, and display such User Content throughout the world
+                in any media.<br>
+                <br>
+                <b>5.</b> Limitation of Liability<br>
+                <b>5.1.</b> “Project Group 9” shall not be liable for any direct, indirect, incidental, special,
+                consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or
+                indirectly, arising out of your access to or use of the Website or any content or services available on
+                or through the Website.<br>
+                <br>
+                <b>6.</b> Changes to Terms and Conditions<br>
+                <b>6.1.</b> “Project Group 9” reserves the right to modify or replace these Terms and Conditions at any
+                time. Any changes will be effective immediately upon posting the revised Terms and Conditions on the
+                Website. Your continued use of the Website after any such changes constitutes your acceptance of the new
+                Terms and Conditions.<br>
+                <br>
+                <b>7.</b> Governing Law<br>
+                <b>7.1.</b> These Terms and Conditions shall be governed by and construed in accordance with the laws of
+                [Your Jurisdiction], without regard to its conflict of law provisions.<br>
+                <br>
+                <b>8.</b> Contact Us<br>
+                <b>8.1.</b> If you have any questions about these Terms and Conditions, please contact us at
+                project_group_9@gmail.com”<br>
+                <br>
+                By using the Website, you acknowledge that you have read, understood, and agree to be bound by these
+                Terms and Conditions. If you do not agree to these Terms and Conditions, you may not access or use the
+                Website.
+
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

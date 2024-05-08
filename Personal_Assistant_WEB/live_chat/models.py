@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Message(models.Model):
@@ -8,10 +8,11 @@ class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user.username
+        return self.user.username  # noqa
 
+    @staticmethod
     def last_50_messages():
-        return Message.objects.order_by('-timestamp').all()[:50]
+        return Message.objects.order_by('-timestamp').all()[:50]  # noqa
 
     class Meta:
         db_table = "messages"

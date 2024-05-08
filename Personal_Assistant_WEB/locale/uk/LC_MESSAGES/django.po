@@ -31,7 +31,7 @@ msgstr "Українська"
 #: .\Personal_Assistant_WEB\templates\Personal_Assistant_WEB\base.html:9
 #: .\Personal_Assistant_WEB\templates\Personal_Assistant_WEB\base.html:38
 msgid "Personal Assistant"
-msgstr "Особистий помічник"
+msgstr "Персональний асистент"
 
 #: .\Personal_Assistant_WEB\templates\Personal_Assistant_WEB\base.html:20
 msgid "English Flag"
@@ -59,7 +59,7 @@ msgstr "Контакти"
 #: .\Personal_Assistant_WEB\templates\Personal_Assistant_WEB\base.html:63
 #: .\Personal_Assistant_WEB\templates\Personal_Assistant_WEB\base.html:80
 msgid "Notes"
-msgstr "Замітки"
+msgstr "Нотатки"
 
 #: .\Personal_Assistant_WEB\templates\Personal_Assistant_WEB\base.html:65
 #: .\Personal_Assistant_WEB\templates\Personal_Assistant_WEB\base.html:84
@@ -484,7 +484,7 @@ msgstr "Новини і статистика"
 
 #: .\news\templates\news\news.html:18
 msgid "Exchange Rates"
-msgstr "Курси валют"
+msgstr "Курс валют"
 
 #: .\news\templates\news\news.html:21
 msgid "Date:"
@@ -561,29 +561,29 @@ msgstr "Читати далі"
 #: .\notes\templates\notes\add_note.html:6
 #: .\notes\templates\notes\my_notes.html:10
 msgid "Add Note"
-msgstr "Додати замітку"
+msgstr "Додати нотатку"
 
 #: .\notes\templates\notes\add_note.html:11
 #: .\notes\templates\notes\edit_note.html:10
 msgid "Note Details"
-msgstr "Деталі замітки"
+msgstr "Деталі нотатки"
 
 #: .\notes\templates\notes\add_note.html:30
 #: .\notes\templates\notes\my_notes.html:14
 msgid "Back to Notes"
-msgstr "Повернутися до заміток"
+msgstr "Повернутися до нотаток"
 
 #: .\notes\templates\notes\delete_note.html:6
 msgid "Delete Note"
-msgstr "Видалити замітку"
+msgstr "Видалити нотатку"
 
 #: .\notes\templates\notes\delete_note.html:12
 msgid "Are you sure you want to delete the note"
-msgstr "Ви впевнені, що хочете видалити замітку"
+msgstr "Ви впевнені, що хочете видалити нотатку"
 
 #: .\notes\templates\notes\edit_note.html:5
 msgid "Edit Note"
-msgstr "Редагувати замітку"
+msgstr "Редагувати нотатку"
 
 #: .\notes\templates\notes\edit_note.html:25
 msgid "Text"
@@ -616,11 +616,11 @@ msgstr "Введіть теги"
 
 #: .\notes\templates\notes\my_notes.html:6
 msgid "My Notes"
-msgstr "Мої замітки"
+msgstr "Мої нотатки"
 
 #: .\notes\templates\notes\my_notes.html:22
 msgid "Search Notes"
-msgstr "Пошук заміток"
+msgstr "Пошук нотаток"
 
 #: .\notes\templates\notes\my_notes.html:31
 msgid "Top 10 Tags"
@@ -628,7 +628,7 @@ msgstr "Топ-10 тегів"
 
 #: .\notes\templates\notes\my_notes.html:71
 msgid "Open Note"
-msgstr "Відкрити замітку"
+msgstr "Відкрити нотатку"
 
 #: .\profiles\templates\profiles\edit_profile.html:10
 #: .\profiles\templates\profiles\my_profile.html:10
@@ -948,3 +948,11 @@ msgstr "Україна"
 #: .\news\templates\news\news.html:68
 msgid "Thundery outbreaks in nearby"
 msgstr "Грозові спалахи поблизу"
+
+#: .\news\templates\news\news.html:68
+msgid "Partly Cloudy"
+msgstr "Мінлива хмарність"
+
+#: .\news\templates\news\news.html:68
+msgid "Sunny"
+msgstr "Сонячно"

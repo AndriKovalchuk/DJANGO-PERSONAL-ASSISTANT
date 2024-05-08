@@ -3,7 +3,7 @@ from datetime import date
 
 from django import forms
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm, DateTimeInput
+from django.forms import DateTimeInput, ModelForm
 
 from .models import Contact
 

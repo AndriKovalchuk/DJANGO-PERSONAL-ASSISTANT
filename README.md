@@ -43,10 +43,12 @@ files, user profiles, and providing news updates.
 
 ## Installation
 
+### From GitHub
+
 1. Clone the repository:
     ```bash
-    git clone <repository-url>
-    cd <repository-name>
+    git clone https://github.com/AndriKovalchuk/DJANGO-PERSONAL-ASSISTANT
+    cd DJANGO-PERSONAL-ASSISTANT
     ```
 2. Install dependencies:
     ```bash
@@ -55,9 +57,23 @@ files, user profiles, and providing news updates.
 3. Set up environment variables:
     - Create a `.env` file in the project root directory.
     - Define the following environment variables in the `.env` file:
+
+        - `SECRET_KEY`: A secret key used by Django for cryptographic signing.
+        - `DATABASE_NAME`: Name of the database.
+        - `DATABASE_USER`: Username for accessing the database.
+        - `DATABASE_PASSWORD`: Password for accessing the database.
+        - `DATABASE_HOST`: Host where the database is located.
+        - `DATABASE_PORT`: Port number for the database connection.
+        - `EMAIL_HOST`: SMTP host for sending emails.
+        - `EMAIL_PORT`: SMTP port for email communication.
+        - `EMAIL_HOST_USER`: Username for the email host.
+        - `EMAIL_HOST_PASSWORD`: Password for the email host.
+        - `NEWSAPI_API_KEY`: API key for accessing news articles.
+        - `WEATHER_API_KEY`: API key for accessing weather information.
         - `CLOUD_NAME`: Your Cloudinary cloud name.
         - `CLOUD_API_KEY`: Your Cloudinary API key.
         - `CLOUD_API_SECRET`: Your Cloudinary API secret.
+
 4. Run migrations:
     ```bash
     python manage.py migrate
@@ -67,6 +83,14 @@ files, user profiles, and providing news updates.
     python manage.py runserver
     ```
 6. Access the application at [http://localhost:8000/](http://localhost:8000/).
+
+### From fly.io
+
+You can also install the project from fly.io:
+
+1. Visit [https://fly.io/apps/personal-assistant-web](https://fly.io/apps/personal-assistant-web)
+2. Follow the instructions provided on the fly.io page for installation and setup.
+3. Access the application using the following URL: (https://personal-assistant-web.fly.dev).
 
 ## Usage
 
@@ -85,6 +109,8 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 3. Commit your changes (`git commit -am 'Add new feature'`).
 4. Push to the branch (`git push origin feature/<feature-name>`).
 5. Create a new Pull Request.
+
+Please ensure that your contributions adhere to the project's coding standards and conventions.
 
 ## License
 

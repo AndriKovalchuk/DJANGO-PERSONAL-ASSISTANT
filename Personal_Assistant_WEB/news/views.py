@@ -1,11 +1,11 @@
-import environ
-from django.shortcuts import render
 from datetime import datetime, timedelta
 from pathlib import Path
+
 import requests
 from django.core.cache import cache
+from django.shortcuts import render
 
-from Personal_Assistant_WEB.settings import NEWSAPI_API_KEY, WEATHER_API_KEY  # noqa
+from Personal_Assistant_WEB.settings import (NEWSAPI_API_KEY, WEATHER_API_KEY)  # noqa
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -19,12 +19,9 @@ WAR_STATISTICS_URL = "https://russianwarship.rip/api/v2/statistics/latest/"
 NEWS_DAYS = 2
 NEWS_DATE = CURRENT_DATE - timedelta(days=NEWS_DAYS)
 CURRENT_DATE_STR_NEWS = NEWS_DATE.strftime("%Y-%m-%d")
-
 NEWS_TO_SHOW = 10
-
 NEWSAPI_URL = f"https://newsapi.org/v2/top-headlines?country=ua&apiKey={NEWSAPI_API_KEY}"
 
-# Cache keys
 EXCHANGE_RATES_CACHE_KEY = 'exchange_rates'
 WAR_STATS_CACHE_KEY = 'war_stats'
 WAR_STATS_INCREASE_CACHE_KEY = 'war_stats_increase'
@@ -34,9 +31,7 @@ WEATHER_FORECAST_CACHE_KEY = 'weather_forecast'
 
 # WEATHER
 CITY_NAME = "Kyiv"
-
 WEATHER_URL = f"http://api.weatherapi.com/v1/current.json?key={WEATHER_API_KEY}&q={CITY_NAME}"
-
 WEATHER_URL_FORECAST = f"http://api.weatherapi.com/v1/forecast.json?key={WEATHER_API_KEY}&q={CITY_NAME}&days=3"
 
 
@@ -78,7 +73,6 @@ def get_data_from_apis(urls):
 
 
 def news_view(request):
-    # CHECKING IF DATA IS CACHED
     exchange_rates_cache = cache.get(EXCHANGE_RATES_CACHE_KEY)
     war_stats_cache = cache.get(WAR_STATS_CACHE_KEY)
     war_stats_increase_cache = cache.get(WAR_STATS_INCREASE_CACHE_KEY)
@@ -105,7 +99,6 @@ def news_view(request):
         weather_forecast_data = get_weather_forecast(WEATHER_API_KEY, CITY_NAME, 4)
         forecast_days = weather_forecast_data.get("forecast", {}).get("forecastday", [])
 
-        # Cache data for next request (15 minutes (900 seconds))
         cache.set(EXCHANGE_RATES_CACHE_KEY, exchange_rates, timeout=900)
         cache.set(WAR_STATS_CACHE_KEY, war_stats, timeout=900)
         cache.set(WAR_STATS_INCREASE_CACHE_KEY, war_stats_increase, timeout=900)
@@ -113,7 +106,6 @@ def news_view(request):
         cache.set(WEATHER_CACHE_KEY, weather_data, timeout=900)
         cache.set(WEATHER_FORECAST_CACHE_KEY, weather_forecast_data, timeout=900)
 
-        # IN CASE EXCHANGE RATES ARE NOT UPDATED
         for currency in ['USD', 'EUR', 'PLN']:
             try:
                 sale_rate = next(rate["saleRate"] for rate in exchange_rates if rate["currency"] == currency)
@@ -206,7 +198,6 @@ def news_view(request):
         weather_forecast_data = get_weather_forecast(WEATHER_API_KEY, CITY_NAME, 4)
         forecast_days = weather_forecast_data.get("forecast", {}).get("forecastday", [])
 
-        # IN CASE EXCHANGE RATES ARE NOT UPDATED
         for currency in ['USD', 'EUR', 'PLN']:
             try:
                 sale_rate = next(rate["saleRate"] for rate in exchange_rates if rate["currency"] == currency)

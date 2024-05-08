@@ -1,5 +1,6 @@
 from django import forms
-from .models import Profile, Avatar
+
+from .models import Avatar, Profile
 
 
 class ProfileForm(forms.ModelForm):

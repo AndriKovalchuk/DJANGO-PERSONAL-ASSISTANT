@@ -1,0 +1,7 @@
+.env
+.idea
+*__pycache__/*
+*.pyc
+*.sqlite3
+postgres-data
+fly.toml

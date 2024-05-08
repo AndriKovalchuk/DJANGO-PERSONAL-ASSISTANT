@@ -1,29 +1,28 @@
 import logging
+import os
 
-from django.urls import reverse
-from django.db.models import Q
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse
-from django.core.files.storage import default_storage
-from django.shortcuts import get_object_or_404
 import cloudinary
 import cloudinary.uploader
-import os
-from .forms import FileUploadForm, CategoryForm, EditFileForm
-from .models import File
-from .models import Category
-from Personal_Assistant_WEB.settings import env  # noqa
 import requests
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+
+from Personal_Assistant_WEB.settings import env  # noqa
+
+from .forms import CategoryForm, EditFileForm, FileUploadForm
+from .models import Category, File
 
 cloudinary.config(cloud_name=env('CLOUD_NAME'), api_key=env('CLOUD_API_KEY'), api_secret=env('CLOUD_API_SECRET'))
 
 
 @login_required
 def my_files(request):
-    files = File.objects.filter(user=request.user)
+    files = File.objects.filter(user=request.user)  # noqa
 
     if request.GET.get('search'):
         query = request.GET.get('search')
@@ -43,10 +42,9 @@ def my_files(request):
 
     page_range = range(1, files_page.paginator.num_pages + 1)
 
-    # Перевіряємо чи існує категорія "Miscellaneous" для поточного користувача
-    miscellaneous_category, created = Category.objects.get_or_create(name='Miscellaneous', user=request.user)
+    miscellaneous_category, created = Category.objects.get_or_create(name='Miscellaneous', user=request.user)  # noqa
 
-    categories = Category.objects.filter(user=request.user)
+    categories = Category.objects.filter(user=request.user)  # noqa
     return render(request, 'filemanager/my_files.html',
                   {'page_title': 'Your uploaded files', 'files': files_page, 'categories': categories,
                    "page_range": page_range})
@@ -60,9 +58,7 @@ def upload_file(request):
             file_to_upload = request.FILES['file']
             file_extension = os.path.splitext(file_to_upload.name)[1].lower()
 
-            # Handling file uploads based on their extensions
-            if file_extension in ['.mov', '.mp4', '.avi', '.mkv', '.wmv']:  # Video upload
-                # Upload to Cloudinary
+            if file_extension in ['.mov', '.mp4', '.avi', '.mkv', '.wmv']:
                 uploaded_file = cloudinary.uploader.upload(
                     file_to_upload,
                     resource_type="video",
@@ -70,7 +66,7 @@ def upload_file(request):
                 )
                 file_url = uploaded_file['secure_url']
 
-            elif file_extension in ['.jpeg', '.jpg', '.png']:  # Image upload
+            elif file_extension in ['.jpeg', '.jpg', '.png']:
                 uploaded_file = cloudinary.uploader.upload(
                     file_to_upload,
                     resource_type="image",
@@ -78,7 +74,7 @@ def upload_file(request):
                 )
                 file_url = uploaded_file['secure_url']
 
-            elif file_extension in ['.pdf', '.docx', '.xlsx']:  # Document upload
+            elif file_extension in ['.pdf', '.docx', '.xlsx']:
                 uploaded_file = cloudinary.uploader.upload(
                     file_to_upload,
                     resource_type="auto",
@@ -86,7 +82,7 @@ def upload_file(request):
                 )
                 file_url = uploaded_file['secure_url']
 
-            elif file_extension in ['.mp3', '.wav']:  # Audio upload
+            elif file_extension in ['.mp3', '.wav']:
                 uploaded_file = cloudinary.uploader.upload(
                     file_to_upload,
                     resource_type="auto",
@@ -97,27 +93,24 @@ def upload_file(request):
             else:
                 error_message = "Invalid file format. Please upload a video file (MOV, MP4, AVI, MKV, WMV), " \
                                 "image file (JPEG, JPG, PNG), document (PDF, DOCX, XLSX) or audio file (MP3, WAV)."
-                messages.error(request, error_message)  # Додати Alert помилки
+                messages.error(request, error_message)
                 return render(request, 'filemanager/add_file.html', {'form': form})
 
-            # Creating a new file object in the Django model with the Cloudinary URL
-            file_instance = File.objects.create(
+            file_instance = File.objects.create(  # noqa
                 user=request.user,
                 url=file_url,
                 name=file_to_upload.name,
             )
 
-            # Saving the category if selected in the form
             if form.cleaned_data['category']:
                 file_instance.category = form.cleaned_data['category']
             else:
                 new_category = form.cleaned_data.get('new_category')
                 if new_category:
                     # Creating a new category
-                    category = Category.objects.create(name=new_category, user=request.user)
+                    category = Category.objects.create(name=new_category, user=request.user)  # noqa
                     file_instance.category = category
 
-            # Save the file instance after assigning the category
             file_instance.save()
 
             return redirect('filemanager:my_files')
@@ -129,7 +122,7 @@ def upload_file(request):
 
 @login_required
 def files_by_categories(request, category_id):
-    files = File.objects.filter(category_id=category_id)
+    files = File.objects.filter(category_id=category_id)  # noqa
 
     items_per_page = 20
     paginator = Paginator(files, items_per_page)
@@ -146,7 +139,7 @@ def files_by_categories(request, category_id):
     page_range = range(1, files_page.paginator.num_pages + 1)
 
     category = get_object_or_404(Category, pk=category_id)
-    categories = Category.objects.filter(user=request.user)
+    categories = Category.objects.filter(user=request.user)  # noqa
     return render(request, 'filemanager/my_files.html',
                   {'page_title': f'Files by "{category.name}"', 'files': files_page, 'categories': categories,
                    "page_range": page_range})
@@ -170,18 +163,16 @@ def edit_file(request, file_id):
 
 
 @login_required
-def download_file(request, file_id):
+def download_file(file_id):
     file_instance = get_object_or_404(File, pk=file_id)
     try:
-        # Отримуємо URL файлу з Cloudinary
+
         file_url, options = cloudinary.utils.cloudinary_url(file_instance.url)
 
-        # Завантажуємо файл за URL
         response = requests.get(file_url)
 
-        # Перевіряємо успішність запиту
         if response.status_code == 200:
-            # Повертаємо вміст файлу у відповіді HTTP
+
             file_content = response.content
             http_response = HttpResponse(file_content, content_type='application/octet-stream')
             http_response['Content-Disposition'] = f'attachment; filename="{file_instance.name}"'
@@ -235,21 +226,21 @@ def create_category(request):
             return redirect('filemanager:my_files')
     else:
         form = CategoryForm()
-    miscellaneous_category, created = Category.objects.get_or_create(name='Miscellaneous', user=request.user)
+    miscellaneous_category, created = Category.objects.get_or_create(name='Miscellaneous', user=request.user)  # noqa
 
     return render(request, 'filemanager/create_category.html', {'page_title': 'Create Category', 'form': form})
 
 
 @login_required
 def manage_categories(request):
-    categories = Category.objects.filter(user=request.user)
+    categories = Category.objects.filter(user=request.user)  # noqa
     return render(request, 'filemanager/manage_categories.html',
                   {'page_title': 'Manage Categories', 'categories': categories})
 
 
 @login_required
 def edit_category(request, category_id):
-    category = Category.objects.get(pk=category_id)
+    category = Category.objects.get(pk=category_id)  # noqa
     if request.method == 'POST':
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
@@ -267,8 +258,8 @@ def delete_category(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
 
     if request.method == 'POST':
-        uncategorized = Category.objects.filter(name='Без категорії', user=request.user).first()
-        files = File.objects.filter(category=category)
+        uncategorized = Category.objects.filter(name='Без категорії', user=request.user).first()  # noqa
+        files = File.objects.filter(category=category)  # noqa
         files.update(category=uncategorized)
         category.delete()
         return redirect('filemanager:manage_categories')

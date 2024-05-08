@@ -1,6 +1,5 @@
-from django.db import models
-
 from django.contrib.auth.models import User  # noqa
+from django.db import models
 
 
 class Tag(models.Model):

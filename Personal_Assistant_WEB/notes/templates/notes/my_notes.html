@@ -1,22 +1,24 @@
 {% extends "Personal_Assistant_WEB/base.html" %}
 {% load i18n %}
+{% load static %}
 {% block content %}
 <div class="row mb-3">
+    <link rel="stylesheet" href="{% static 'css/notes.css' %}">
     <div class="col mt-3">
         <h1 class="fs-1 fw-bold">{% trans "My Notes" %}</h1>
     </div>
-    {% if not query %}
+    {% if query or tag %}
     <div class="col text-end mt-3">
-        <a href="{% url 'notes:add_note' %}" class="btn btn-primary">{% trans 'Add Note' %}</a>
+        <a href="{% url 'notes:my_notes' %}" class="btn btn-secondary">Back to Notes</a>
     </div>
     {% else %}
     <div class="col text-end mt-3">
-        <a href="{% url 'notes:my_notes' %}" class="btn btn-secondary">{% trans 'Back to Notes' %}</a>
+        <a href="{% url 'notes:add_note' %}" class="btn btn-primary">{% trans 'Add Note' %}</a>
     </div>
     {% endif %}
 
 </div>
-<form class="row g-2 align-items-center search-block" style="margin-bottom: -35px; margin-top: -44px" method="GET"
+<form class="row g-2 align-items-center search-block" style="margin-bottom: -35px; " method="GET"
       action="{% url 'notes:my_notes' %}">
     <div class="col-auto">
         <input class="form-control" type="search" name="q" placeholder="{% trans 'Search Notes' %}"
@@ -25,6 +27,9 @@
     <div class="col-auto">
         <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
     </div>
+
+</form>
+<div style="width: 300px; float: right; margin-top: -43px">
     <div class="col align-items-right order-first order-md-last">
         <!-- Displaying top 10 tags -->
         <div class="mb-3">
@@ -40,29 +45,30 @@
             </ul>
         </div>
     </div>
-</form>
-
+</div>
 {% if query %}
 {% if not notes %}
 <div class="alert alert-danger" role="alert">
-    {% trans "We're sorry, but no results were found matching by" %} "{{ query }}". {% trans "Please try again with different keywords or refine your search." %}
+    {% trans "We're sorry, but no results were found matching by" %} "{{ query }}". {% trans "Please try again with
+    different keywords or refine your search." %}
 </div>
 {% endif %}
 {% endif %}
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-mb-9" style="margin-top: 55px">
         {% for note in notes %}
         <div class="card mb-3">
             <div class="card-header">
                 {{ forloop.counter }}. {{ note.text }}
             </div>
             <div class="card-body bg-light">
-                <p class="card-text">{% trans 'Description' %}: {{ note.description }}</p>
+                <p class="card-text desc">{% trans 'Description' %}: {{ note.description }}</p>
                 <p class="card-text">{% trans 'Tags' %}:
                     {% for tag in note.tags.all %}
                     #{{ tag.name }}{% if not forloop.last %}, {% endif %}
                     {% endfor %}
                 </p>
+
                 <a href="{% url 'notes:edit_note' note.id %}" class="btn btn-primary">{% trans 'Edit' %} </a>
                 <a href="{% url 'notes:delete_note' note.id %}" class="btn btn-danger">{% trans 'Delete' %}</a>
                 <!-- Button to open modal window for this note -->
@@ -71,11 +77,12 @@
                     {% trans 'Open Note' %}
                 </button>
             </div>
+
         </div>
         <!-- Modal window to display full note -->
-        <div class="modal fade" id="noteModal{{ note.id }}" tabindex="-1" aria-labelledby="noteModalLabel{{ note.id }}"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+        <div class="modal fade" id="noteModal{{ note.id }}" tabindex="-1"
+             aria-labelledby="noteModalLabel{{ note.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="noteModalLabel{{ note.id }}">{{ note.text }}</h5>
@@ -85,7 +92,7 @@
                         <p>{% trans 'Description' %}: {{ note.description }}</p>
                         <p>{% trans 'Tags' %}:
                             {% for tag in note.tags.all %}
-                            <a href="?tag={{ tag.name }}"># {{ tag.name }}</a>
+                            <a href="?tag={{ tag.name }}">#{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </p>
                     </div>

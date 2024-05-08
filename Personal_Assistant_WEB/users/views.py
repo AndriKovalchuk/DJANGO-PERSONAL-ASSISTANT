@@ -1,14 +1,14 @@
+from django.contrib import messages
 from django.contrib.auth import logout
+from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.contrib import messages
 from django.views.generic import DetailView, TemplateView
-from django.contrib.auth.views import PasswordResetView
+from profiles.models import Profile  # noqa
 
 from .forms import RegistrationForm
-from profiles.models import Profile  # noqa
 
 
 class RegisterView(View):

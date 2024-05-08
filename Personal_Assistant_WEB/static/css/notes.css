@@ -1,0 +1,16 @@
+.card {
+    height: 200px;
+    overflow: hidden;
+}
+
+.card-header {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.desc {
+    height: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

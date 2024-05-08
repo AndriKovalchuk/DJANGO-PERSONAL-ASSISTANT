@@ -1,0 +1,168 @@
+body {
+    font-family: Montserrat, sans-serif;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+#BackgroundVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1; /* Ensure the video stays behind other content */
+}
+
+
+.alert-error, .errorlist {
+    color: crimson;
+}
+
+.alert-success {
+    color: green;
+}
+
+.navbar-nav .nav-link,
+.navbar-nav .dropdown-menu .dropdown-item {
+    font-size: 20px;
+}
+
+.footer-text {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            padding: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+.footer-text-custom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            padding: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+.github-link {
+    color: blue
+    }
+
+nav .search-block {
+    margin-top: 10px;
+    margin-right: 25px;
+    font-size: 20px;
+}
+
+
+.main-container {
+    height: 100px;
+}
+
+.tags-box {
+    font-weight: bold;
+}
+
+.tag-item {
+    color: blue;
+    font-weight: bold;
+    font-size: 28px;
+    display: block;
+    margin: 4px;
+}
+
+.list-group-item {
+    background-color: transparent;
+    border: none;
+    padding: 4px;
+}
+
+.list-group-item a {
+    font-size: 18px;
+    color: white;
+    text-decoration: none;
+}
+
+.list-group-item a:hover {
+    cursor: default;
+}
+
+.top-ten {
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 30px;
+    font-size: 40px;
+    font-weight: bold;
+    font-style: italic;
+    }
+
+.top-tags {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    font-style: italic;
+    }
+
+.item {
+    margin-top: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    }
+
+.news-page-title {
+    text-align: center;
+    font-size: 36px;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.custom-title {
+    font-size: 55px;
+}
+
+.header-box {
+    padding-left: 290px;
+}
+
+@media only screen and (max-width: 414px) {
+    .custom-title a {
+    font-size: 40px;
+    margin-bottom: 50px;
+    text-align: center;
+    }
+
+    .header-box {
+    padding-left: 15px;
+    padding-right: 15px;
+    }
+
+
+    .navbar-nav .nav-link,
+    .navbar-nav .dropdown-menu .dropdown-item {
+        font-size: 12px;
+    }
+
+    .navbar-nav .dropdown-menu.show .dropdown-item {
+            display: none;
+        }
+
+    .footer-text {
+        font-size: 10px;
+    }
+
+    nav .search-block {
+        font-size: 16px;
+    }
+
+    .main-container {
+        height: auto;
+    }
+
+    .text-center-mobile {
+        margin-top: 10px;
+        text-align: center;
+    }
+}
